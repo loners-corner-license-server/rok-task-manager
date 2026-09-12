@@ -1,20 +1,49 @@
-// Replace these two placeholders with your real links before publishing.
+// Add your real Discord invite before live publishing. PayPal below is Sandbox-only for now.
 const LINKS = {
-  whop: "https://whop.com/dashboard/biz_fTrL3E41mP7hru/",
-  discord: "https://discord.gg/bmzc7x5ZA"
+  discord: "https://discord.gg/REPLACE-WITH-YOUR-INVITE"
 };
-
-document.querySelectorAll('.js-whop-link').forEach(a => {
-  a.href = LINKS.whop;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-});
 
 document.querySelectorAll('.js-discord-link').forEach(a => {
   a.href = LINKS.discord;
   a.target = '_blank';
   a.rel = 'noopener noreferrer';
 });
+
+
+// PayPal Sandbox subscription integration.
+// Client ID and Plan ID are public browser identifiers; no PayPal secret is stored here.
+const PAYPAL_PLAN_ID = "P-9VG75437BF639664ANKSXXQI";
+const paypalStatus = document.getElementById('paypal-subscription-status');
+
+if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_PLAN_ID}`)) {
+  paypal.Buttons({
+    style: {
+      shape: 'pill',
+      color: 'gold',
+      layout: 'vertical',
+      label: 'subscribe'
+    },
+    createSubscription: function(data, actions) {
+      if (paypalStatus) paypalStatus.textContent = 'Opening PayPal Sandbox checkout...';
+      return actions.subscription.create({ plan_id: PAYPAL_PLAN_ID });
+    },
+    onApprove: function(data) {
+      if (paypalStatus) {
+        paypalStatus.innerHTML =
+          '<strong>Sandbox subscription approved.</strong><br>' +
+          'Subscription ID: <code>' + data.subscriptionID + '</code><br>' +
+          'Server-side payment verification is the next step before any license or download is released.';
+      }
+    },
+    onCancel: function() {
+      if (paypalStatus) paypalStatus.textContent = 'PayPal checkout was cancelled.';
+    },
+    onError: function(err) {
+      console.error('PayPal subscription error:', err);
+      if (paypalStatus) paypalStatus.textContent = 'PayPal Sandbox checkout encountered an error. Please try again.';
+    }
+  }).render(`#paypal-button-container-${PAYPAL_PLAN_ID}`);
+}
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
