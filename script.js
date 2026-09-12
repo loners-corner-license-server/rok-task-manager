@@ -1,7 +1,7 @@
 // Replace these two placeholders with your real links before publishing.
 const LINKS = {
   whop: "https://whop.com/REPLACE-WITH-YOUR-STORE",
-  discord: "https://discord.gg/REPLACE-WITH-YOUR-INVITE"
+  discord: "https://discord.gg/bmzc7x5ZA"
 };
 
 document.querySelectorAll('.js-whop-link').forEach(a => {
