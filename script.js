@@ -1,6 +1,6 @@
 // Replace these two placeholders with your real links before publishing.
 const LINKS = {
-  whop: "https://whop.com/REPLACE-WITH-YOUR-STORE",
+  whop: "https://whop.com/dashboard/biz_fTrL3E41mP7hru/",
   discord: "https://discord.gg/bmzc7x5ZA"
 };
 
