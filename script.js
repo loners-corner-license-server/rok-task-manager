@@ -6,7 +6,7 @@ const LINKS = {
 document.querySelectorAll('.js-discord-link').forEach(a => {
   a.href = LINKS.discord;
   a.target = '_blank';
-  a.rel = 'noopener noreferrer';
+  a.rel = 'noopener norefermm,rer';
 });
 
 
