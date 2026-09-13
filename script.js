@@ -16,6 +16,7 @@ const PAYPAL_PLAN_ID = "P-9VG75437BF639664ANKSXXQI";
 const PAYPAL_CLAIM_URL =
   "https://loners-corner-license-server.onrender.com/paypal/claim-license";
 const paypalStatus = document.getElementById('paypal-subscription-status');
+const policyConsentCheckbox = document.getElementById('policy-consent-checkbox');
 
 function setPayPalStatus(lines) {
   if (!paypalStatus) return;
@@ -100,6 +101,20 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
       layout: 'vertical',
       label: 'subscribe'
     },
+    onClick: function(data, actions) {
+      if (!policyConsentCheckbox || !policyConsentCheckbox.checked) {
+        setPayPalStatus([
+          {
+            text: 'Please agree to the Subscription, Cancellation & Refund Policy and Terms before checkout.',
+            strong: true
+          }
+        ]);
+        policyConsentCheckbox?.focus();
+        return actions.reject();
+      }
+
+      return actions.resolve();
+    },
     createSubscription: function(data, actions) {
       if (paypalStatus) {
         paypalStatus.textContent = 'Opening PayPal Sandbox checkout...';
@@ -179,7 +194,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
               link: true
             });
             statusLines.push({
-              text: 'Keep your license key. The download link is temporary and can be regenerated only through a verified subscription claim.'
+              text: 'Keep your license key. The private download link is temporary and is issued only after server-side PayPal verification.'
             });
           } else {
             statusLines.push({

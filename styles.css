@@ -189,3 +189,35 @@ details p { color:var(--muted); margin:0 0 18px; }
   .cta-actions { flex-direction:column; width:100%; }
   .footer-grid, .legal-note { flex-direction:column; align-items:flex-start; }
 }
+
+/* Subscription policy + checkout consent */
+.policy-consent {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin:0 0 18px;
+  padding:15px 16px;
+  border:1px solid rgba(111,200,255,.18);
+  border-radius:14px;
+  background:rgba(46,214,255,.045);
+  color:#b9cbe0;
+  font-size:13px;
+}
+.policy-consent input { margin-top:3px; width:17px; height:17px; flex:0 0 auto; accent-color:var(--cyan); }
+.policy-consent label { cursor:pointer; }
+.policy-consent a { color:var(--cyan); font-weight:800; text-decoration:underline; text-underline-offset:2px; }
+.checkout-note { margin-top:14px; color:var(--muted); font-size:12px; }
+
+.policy-section { background:linear-gradient(180deg, transparent, rgba(7,20,39,.56), transparent); }
+.policy-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.policy-card { padding:24px; border-radius:var(--radius); border:1px solid var(--line); background:linear-gradient(180deg, rgba(11,30,56,.72), rgba(6,17,33,.78)); }
+.policy-card h3 { margin:0 0 10px; font-size:18px; }
+.policy-card p { margin:0; color:#9fb4c9; font-size:14px; }
+.policy-updated { color:#7890a7; font-size:12px; margin-top:12px; }
+.policy-summary { margin-top:18px; padding:20px 22px; border-radius:16px; border:1px solid rgba(148,93,255,.28); background:rgba(148,93,255,.07); color:#b9cbe0; }
+.policy-summary strong { color:#f7fbff; }
+
+@media (max-width: 760px) {
+  .policy-grid { grid-template-columns:1fr; }
+}
+
