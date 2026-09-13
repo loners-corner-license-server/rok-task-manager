@@ -34,6 +34,14 @@ function setPayPalStatus(lines) {
       const code = document.createElement('code');
       code.textContent = line.text;
       row.appendChild(code);
+    } else if (line.link) {
+      const link = document.createElement('a');
+      link.href = line.href;
+      link.textContent = line.text;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.setAttribute('download', '');
+      row.appendChild(link);
     } else {
       row.textContent = line.text;
     }
@@ -146,7 +154,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
         const result = await claimPayPalLicense(subscriptionID, claimToken);
 
         if (result && result.fulfilled === true && result.license_key) {
-          setPayPalStatus([
+          const statusLines = [
             {
               text: 'Sandbox payment verified — license created.',
               strong: true
@@ -160,11 +168,26 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
               prefix: 'Your license key: ',
               text: result.license_key,
               code: true
-            },
-            {
-              text: 'Copy and keep this license key. Private download delivery will be connected next.'
             }
-          ]);
+          ];
+
+          if (result.download_url) {
+            const minutes = Math.max(1, Math.floor((result.download_expires_in || 900) / 60));
+            statusLines.push({
+              text: `Download ROK Task Manager v1.0.1 — link expires in ${minutes} minutes`,
+              href: result.download_url,
+              link: true
+            });
+            statusLines.push({
+              text: 'Keep your license key. The download link is temporary and can be regenerated only through a verified subscription claim.'
+            });
+          } else {
+            statusLines.push({
+              text: result.download_error || 'Your license was created, but the private download is temporarily unavailable.'
+            });
+          }
+
+          setPayPalStatus(statusLines);
           return;
         }
 
