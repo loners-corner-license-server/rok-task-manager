@@ -1,6 +1,6 @@
 // Add your real Discord invite before live publishing. PayPal below is Sandbox-only for now.
 const LINKS = {
-  discord: "https://discord.gg/REPLACE-WITH-YOUR-INVITE"
+  discord: "https://discord.gg/bmzc7x5ZA"
 };
 
 document.querySelectorAll('.js-discord-link').forEach(a => {
