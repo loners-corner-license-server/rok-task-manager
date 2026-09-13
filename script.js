@@ -1,4 +1,4 @@
-// Add your real Discord invite before live publishing. PayPal below is Sandbox-only for now.
+// Production storefront configuration. PayPal below uses Live credentials.
 const LINKS = {
   discord: "https://discord.gg/bmzc7x5ZA"
 };
@@ -10,9 +10,9 @@ document.querySelectorAll('.js-discord-link').forEach(a => {
 });
 
 
-// PayPal Sandbox subscription integration.
+// PayPal Live subscription integration.
 // Client ID and Plan ID are public browser identifiers; no PayPal secret is stored here.
-const PAYPAL_PLAN_ID = "P-9VG75437BF639664ANKSXXQI";
+const PAYPAL_PLAN_ID = "P-1SL81894FA907780YNKTKVGI";
 const PAYPAL_CLAIM_URL =
   "https://loners-corner-license-server.onrender.com/paypal/claim-license";
 const paypalStatus = document.getElementById('paypal-subscription-status');
@@ -117,7 +117,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
     },
     createSubscription: function(data, actions) {
       if (paypalStatus) {
-        paypalStatus.textContent = 'Opening PayPal Sandbox checkout...';
+        paypalStatus.textContent = 'Opening secure PayPal checkout...';
       }
 
       activeClaimToken = createClaimToken();
@@ -152,7 +152,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
 
       setPayPalStatus([
         {
-          text: 'PayPal approved the Sandbox subscription.',
+          text: 'PayPal approved the subscription.',
           strong: true
         },
         {
@@ -171,7 +171,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
         if (result && result.fulfilled === true && result.license_key) {
           const statusLines = [
             {
-              text: 'Sandbox payment verified — license created.',
+              text: 'Payment verified — license created.',
               strong: true
             },
             {
@@ -246,7 +246,7 @@ if (window.paypal && document.getElementById(`paypal-button-container-${PAYPAL_P
 
       if (paypalStatus) {
         paypalStatus.textContent =
-          'PayPal Sandbox checkout encountered an error. Please try again.';
+          'PayPal checkout encountered an error. Please try again.';
       }
     }
   }).render(`#paypal-button-container-${PAYPAL_PLAN_ID}`);
