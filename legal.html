@@ -3,32 +3,626 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Terms & Disclaimer | ROK Task Manager</title>
+  <meta
+    name="description"
+    content="Subscription, cancellation, refund policy, terms and disclaimer for ROK Task Manager by Loner's Corner."
+  />
+  <title>Subscription, Refund Policy & Terms | ROK Task Manager</title>
   <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="section">
-    <div class="container" style="max-width:900px">
-      <a href="index.html" class="kicker">← Back to ROK Task Manager</a>
-      <h1 style="font-size:48px; margin-bottom:12px">Terms & Disclaimer</h1>
-      <p style="color:var(--muted)">Starter text only. Replace this page with your final legal terms before launch.</p>
 
-      <div class="feature-card" style="margin-top:30px; min-height:auto">
-        <h2>Independent software</h2>
-        <p>ROK Task Manager is an independent third-party automation utility created by Loner's Corner. It is not affiliated with, sponsored by, endorsed by, or officially connected to Lilith Games or Rise of Kingdoms.</p>
-      </div>
-      <div class="feature-card" style="margin-top:16px; min-height:auto">
-        <h2>User responsibility</h2>
-        <p>Users are responsible for reviewing and complying with the applicable game terms, rules, and policies. Use of automation software may carry account-related risks depending on those rules.</p>
-      </div>
-      <div class="feature-card" style="margin-top:16px; min-height:auto">
-        <h2>System requirements</h2>
-        <p>Performance depends on the supported Windows PC-client environment, required resolution, display scaling, graphics settings, and other configuration requirements shown on the product page.</p>
-      </div>
-      <div class="feature-card" style="margin-top:16px; min-height:auto">
-        <h2>Support and updates</h2>
-        <p>Add your final support policy, update policy, refund policy, license rules, account limits, and subscription terms here before accepting customers.</p>
-      </div>
+  <style>
+    .legal-page {
+      padding-top: 72px;
+    }
+
+    .legal-shell {
+      max-width: 920px;
+    }
+
+    .legal-title {
+      font-size: clamp(42px, 6vw, 66px);
+      line-height: 1.02;
+      letter-spacing: -2.4px;
+      margin: 18px 0 12px;
+    }
+
+    .legal-intro {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 780px;
+    }
+
+    .legal-updated {
+      margin-top: 14px;
+      color: #7991aa;
+      font-size: 13px;
+    }
+
+    .legal-summary {
+      margin: 34px 0 22px;
+      padding: 24px;
+      border: 1px solid rgba(46,214,255,.28);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(46,214,255,.10), transparent 36%),
+        rgba(8, 23, 44, .72);
+    }
+
+    .legal-summary h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .legal-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .legal-summary-item {
+      padding: 15px 16px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .legal-summary-item strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #f7fbff;
+      font-size: 14px;
+    }
+
+    .legal-summary-item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legal-card {
+      margin-top: 16px;
+      min-height: auto;
+    }
+
+    .legal-card h2 {
+      margin: 0 0 14px;
+      font-size: 23px;
+    }
+
+    .legal-card h3 {
+      margin: 22px 0 8px;
+      font-size: 17px;
+      color: #eaf8ff;
+    }
+
+    .legal-card p,
+    .legal-card li {
+      color: #a9bdd1;
+      font-size: 14px;
+    }
+
+    .legal-card ul {
+      margin: 10px 0 0;
+      padding-left: 22px;
+    }
+
+    .legal-card li + li {
+      margin-top: 7px;
+    }
+
+    .legal-card a {
+      color: var(--cyan);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .policy-callout {
+      margin-top: 18px;
+      padding: 17px 18px;
+      border-left: 3px solid var(--cyan);
+      border-radius: 10px;
+      background: rgba(46,214,255,.055);
+      color: #bed0e1;
+      font-size: 14px;
+    }
+
+    .policy-warning {
+      border-left-color: #ffd46a;
+      background: rgba(255,212,106,.055);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legal-footer-note {
+      margin: 28px 0 0;
+      padding: 22px 0 0;
+      border-top: 1px solid rgba(255,255,255,.07);
+      color: #70859a;
+      font-size: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .legal-page {
+        padding-top: 48px;
+      }
+
+      .legal-summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .legal-title {
+        letter-spacing: -1.6px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <main class="section legal-page">
+    <div class="container legal-shell">
+      <a href="index.html" class="kicker back-link">← Back to ROK Task Manager</a>
+
+      <h1 class="legal-title">Subscription, Cancellation &amp; Refund Policy</h1>
+      <p class="legal-intro">
+        These terms apply to purchases and use of ROK Task Manager by Loner's Corner.
+        By completing checkout, activating a license, or using the paid software, you
+        agree to the policies and terms below.
+      </p>
+      <p class="legal-updated">Effective date: September 14, 2026</p>
+
+      <section class="legal-summary">
+        <h2>Important purchase terms</h2>
+        <div class="legal-summary-grid">
+          <div class="legal-summary-item">
+            <strong>$50 USD monthly subscription</strong>
+            <span>Renews automatically each month until cancelled.</span>
+          </div>
+
+          <div class="legal-summary-item">
+            <strong>One Windows PC at a time</strong>
+            <span>A license may be moved to another PC after an approved device reset.</span>
+          </div>
+
+          <div class="legal-summary-item">
+            <strong>Cancel anytime</strong>
+            <span>Cancellation stops future renewals. It does not automatically refund the current billing period.</span>
+          </div>
+
+          <div class="legal-summary-item">
+            <strong>7-day limited refund request window</strong>
+            <span>Applies to the initial payment for qualifying problems, not as an unconditional money-back guarantee.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>1. Subscription and billing</h2>
+
+        <p>
+          ROK Task Manager is offered as a monthly software subscription at
+          <strong>$50.00 USD per month</strong>, unless a different price is clearly
+          displayed at checkout.
+        </p>
+
+        <p>
+          The subscription renews automatically each month until cancelled.
+          Payments are processed by PayPal or another payment provider shown at checkout.
+        </p>
+
+        <p>
+          Loner's Corner does not store your complete debit-card, credit-card, or bank-account
+          credentials. Those payment details are handled by the applicable payment provider.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>2. License and device use</h2>
+
+        <p>
+          A paid subscription grants you a limited, non-exclusive, non-transferable license
+          to use ROK Task Manager during the period for which your subscription remains valid.
+        </p>
+
+        <p>
+          Each license is intended for <strong>one Windows PC at a time</strong>.
+          A license already activated on one PC may be rejected on another PC until the
+          existing device binding is reset or deactivated.
+        </p>
+
+        <p>
+          Legitimate device-change requests may be handled through support. Approval of a
+          device reset does not create an additional simultaneous license seat.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>3. Cancellation</h2>
+
+        <p>
+          You may cancel your subscription at any time through the available PayPal
+          subscription controls or by contacting Loner's Corner support for assistance.
+        </p>
+
+        <p>
+          Cancellation prevents future subscription renewals. Unless a refund is separately
+          approved under the refund policy below, cancellation does not automatically refund
+          charges that have already been successfully processed.
+        </p>
+
+        <p>
+          Where technically available and consistent with the payment provider's rules,
+          access may continue until the end of the billing period already paid for.
+        </p>
+
+        <div class="policy-callout">
+          <strong>Cancellation and refund are different actions.</strong>
+          Cancelling stops future billing. A refund returns an eligible payment that has
+          already been made.
+        </div>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>4. Refund policy</h2>
+
+        <p>
+          ROK Task Manager does <strong>not</strong> include an unconditional money-back
+          guarantee. Because the product includes immediate digital access, a software
+          license, and a free demo that can be used before purchase, refunds are limited
+          to qualifying circumstances described below.
+        </p>
+
+        <h3>Initial-payment refund requests</h3>
+        <p>
+          You may request a refund within <strong>7 calendar days of your initial paid
+          subscription charge</strong> when one or more of the following applies:
+        </p>
+
+        <ul>
+          <li>
+            ROK Task Manager cannot be activated because of a fault in Loner's Corner's
+            licensing system and support cannot reasonably resolve the problem.
+          </li>
+          <li>
+            The paid software materially fails to perform its advertised functionality on
+            a Windows PC that meets all published system requirements, and reasonable
+            troubleshooting does not resolve the issue.
+          </li>
+          <li>
+            You were charged more than once for the same intended subscription purchase.
+          </li>
+          <li>
+            A confirmed billing error occurred.
+          </li>
+          <li>
+            The product delivered was materially different from what was represented on the
+            official ROK Task Manager sales page at the time of purchase.
+          </li>
+        </ul>
+
+        <h3>Normally non-refundable situations</h3>
+        <p>
+          Except where applicable law requires otherwise, a refund will normally not be
+          provided for:
+        </p>
+
+        <ul>
+          <li>Change of mind after purchase.</li>
+          <li>Failure to review the free demo before purchasing.</li>
+          <li>Failure to read or follow the published system requirements.</li>
+          <li>Use on an emulator or unsupported environment.</li>
+          <li>Unsupported display resolution, display scaling, graphics settings, map style, or window mode.</li>
+          <li>Loss of compatibility caused by an unsupported third-party game, operating-system, or interface change.</li>
+          <li>Game-account penalties, restrictions, suspension, or other third-party enforcement.</li>
+          <li>Expectation of a feature that was not advertised as part of the paid product.</li>
+          <li>A renewal payment that the customer simply forgot to cancel before the renewal date.</li>
+        </ul>
+
+        <h3>Renewal charges</h3>
+        <p>
+          Monthly renewal charges are generally non-refundable once successfully processed,
+          unless there is a duplicate charge, billing error, other qualifying circumstance,
+          or a refund right that cannot legally be excluded.
+        </p>
+
+        <div class="policy-callout policy-warning">
+          Nothing in this policy limits any refund, repair, replacement, cancellation,
+          or other consumer right that cannot lawfully be excluded under applicable law.
+        </div>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>5. How to request a refund</h2>
+
+        <p>
+          To request a refund, contact Loner's Corner at
+          <a href="mailto:lonerscornersoftwares@gmail.com">lonerscornersoftwares@gmail.com</a>
+          as soon as possible and, for a normal initial-payment request, within the 7-day
+          request period described above.
+        </p>
+
+        <p>Please provide:</p>
+
+        <ul>
+          <li>Your PayPal purchase email.</li>
+          <li>Your PayPal subscription or transaction ID.</li>
+          <li>Your ROK Task Manager license key, if one has already been issued.</li>
+          <li>A short description of the problem.</li>
+          <li>Screenshots or error information when relevant to a technical claim.</li>
+        </ul>
+
+        <p>
+          For technical problems, Loner's Corner may ask you to complete reasonable
+          troubleshooting first. If the refund is approved, it will be submitted through
+          the applicable payment provider to the original payment method where supported.
+          Processing time after submission is controlled by the payment provider and your
+          financial institution.
+        </p>
+
+        <p>
+          An approved refund may result in cancellation or deactivation of the associated
+          ROK Task Manager license and subscription access.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>6. System requirements and compatibility</h2>
+
+        <p>
+          Before purchasing or using the software, you are responsible for reviewing the
+          current requirements shown on the official ROK Task Manager product page.
+        </p>
+
+        <p>The currently supported setup includes:</p>
+
+        <ul>
+          <li>Windows PC only.</li>
+          <li>Official Rise of Kingdoms PC client.</li>
+          <li>No emulator support.</li>
+          <li>1920 × 1080 resolution.</li>
+          <li>100% Windows display scaling.</li>
+          <li>Ultra graphics.</li>
+          <li>Original ROK map style.</li>
+          <li>Fullscreen mode.</li>
+          <li>Stable internet connection.</li>
+          <li>Alphanumeric character names are recommended for OCR reliability.</li>
+        </ul>
+
+        <p>
+          Because ROK Task Manager uses visual recognition, OCR, screen positioning, and
+          third-party software interfaces, changes to Windows, Rise of Kingdoms, screen
+          layouts, graphics, or other third-party components may affect compatibility.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>7. Free demo</h2>
+
+        <p>
+          A free demo is made available so prospective customers can evaluate the supported
+          environment and selected automation workflows before purchasing.
+        </p>
+
+        <p>
+          The demo does not contain every paid feature. Its availability does not create
+          an unconditional right to a refund after purchase, but it is provided to help
+          customers evaluate basic compatibility before subscribing.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>8. Independent software and third-party game terms</h2>
+
+        <p>
+          ROK Task Manager is an independent third-party automation utility created by
+          Loner's Corner. It is not affiliated with, endorsed by, sponsored by, or officially
+          connected with Lilith Games or Rise of Kingdoms.
+        </p>
+
+        <p>
+          All third-party names, trademarks, and game assets belong to their respective owners.
+        </p>
+
+        <p>
+          You are responsible for determining whether your use of automation software complies
+          with the rules, terms, and policies of any third-party game, platform, account, or
+          service you use.
+        </p>
+
+        <p>
+          Loner's Corner does not guarantee protection from account restrictions, penalties,
+          suspension, bans, loss of game access, or other third-party enforcement.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>9. Prohibited use</h2>
+
+        <p>Except where applicable law expressly provides otherwise, you may not:</p>
+
+        <ul>
+          <li>Sell, resell, redistribute, upload, publish, share, rent, lease, or sublicense the software.</li>
+          <li>Share, sell, publish, or distribute your license key or activation credentials.</li>
+          <li>Provide your licensed copy to another person or business for unauthorized use.</li>
+          <li>Remove or misrepresent Loner's Corner branding, copyright, ownership, product-name, or license notices.</li>
+          <li>Claim that you created or are the official publisher of ROK Task Manager.</li>
+          <li>Distribute modified copies of the software.</li>
+          <li>Reverse engineer, decompile, or disassemble the software except to the extent applicable law expressly permits such activity despite this restriction.</li>
+          <li>Circumvent, disable, bypass, or interfere with the software's licensing or activation system.</li>
+        </ul>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>10. Ownership and intellectual property</h2>
+
+        <p>
+          ROK Task Manager, including its source code, executable files, user interface,
+          branding, text, configuration, licensing components, and original supporting
+          materials, is owned by Loner's Corner or its licensors and is protected by
+          applicable intellectual-property laws.
+        </p>
+
+        <p>
+          Purchasing a subscription grants a license to use the software. It does not transfer
+          ownership of the software, source code, or intellectual property.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>11. Updates, changes, and service availability</h2>
+
+        <p>
+          Loner's Corner may provide updates, compatibility fixes, security changes, or
+          product improvements. Features, supported workflows, server functionality, and
+          compatibility may change over time.
+        </p>
+
+        <p>
+          Licensing, payment, hosting, or other infrastructure services may occasionally be
+          unavailable because of maintenance, outages, security events, or third-party
+          service-provider issues.
+        </p>
+
+        <p>
+          Loner's Corner does not guarantee permanent compatibility with future versions of
+          Windows, Rise of Kingdoms, PayPal, or other third-party software or services.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>12. Subscription disputes, reversals, and failed payments</h2>
+
+        <p>
+          If a payment is reversed, refunded, disputed, charged back, or otherwise determined
+          by the payment provider to be unpaid, the associated license or subscription access
+          may be suspended or deactivated while the payment status is unresolved, subject to
+          applicable law and payment-provider rules.
+        </p>
+
+        <p>
+          Customers are encouraged to contact Loner's Corner support first when a billing or
+          technical problem can reasonably be resolved directly.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>13. Privacy and licensing data</h2>
+
+        <p>
+          To operate licensing and support, Loner's Corner may process information such as
+          your license identifier, subscription status, device identifier, activation status,
+          software version, and limited security or technical records.
+        </p>
+
+        <p>
+          Payment information is processed by the payment provider. Loner's Corner does not
+          sell customer personal information.
+        </p>
+
+        <p>
+          Information may be processed by infrastructure, hosting, payment, or support
+          providers when reasonably necessary to operate the product, process purchases,
+          provide support, prevent abuse, or protect service security.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>14. Disclaimer of warranties</h2>
+
+        <p>
+          To the maximum extent permitted by applicable law, ROK Task Manager is provided
+          "as is" and "as available."
+        </p>
+
+        <p>
+          Loner's Corner does not guarantee uninterrupted, error-free, or permanent
+          compatibility with third-party software, games, services, operating-system updates,
+          interface changes, or unsupported system configurations.
+        </p>
+
+        <p>
+          Nothing in these terms excludes warranties or consumer rights that cannot lawfully
+          be excluded.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>15. Limitation of liability</h2>
+
+        <p>
+          To the maximum extent permitted by applicable law, Loner's Corner will not be
+          liable for indirect, incidental, special, consequential, or similar damages arising
+          from use of or inability to use the software, including losses caused by third-party
+          account actions, game updates, service changes, unsupported configurations, or
+          third-party outages.
+        </p>
+
+        <p>
+          Nothing in these terms limits liability where such limitation is prohibited by law.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>16. Termination</h2>
+
+        <p>
+          Loner's Corner may suspend or terminate license access for material violations of
+          these terms, including unauthorized redistribution, resale, license sharing,
+          fraudulent activity, or circumvention of the licensing system, subject to applicable
+          law.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>17. Governing law and mandatory consumer rights</h2>
+
+        <p>
+          These terms are governed by the laws of the Republic of the Philippines, without
+          prejudice to mandatory consumer-protection rights that may apply to a customer in
+          another jurisdiction.
+        </p>
+
+        <p>
+          If any provision of these terms conflicts with a consumer right that cannot legally
+          be waived or excluded, that mandatory right will control to the extent of the conflict.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>18. Changes to these terms</h2>
+
+        <p>
+          Loner's Corner may update these terms for future purchases, releases, or service
+          changes. The version displayed at checkout or otherwise made available for a
+          particular purchase applies to that purchase unless applicable law requires otherwise.
+        </p>
+      </section>
+
+      <section class="feature-card legal-card">
+        <h2>19. Contact</h2>
+
+        <p>
+          For subscription, cancellation, refund, activation, licensing, or technical-support
+          questions, contact:
+        </p>
+
+        <p>
+          <strong>Loner's Corner</strong><br />
+          Email:
+          <a href="mailto:lonerscornersoftwares@gmail.com">lonerscornersoftwares@gmail.com</a>
+        </p>
+      </section>
+
+      <p class="legal-footer-note">
+        These terms are intended to describe the commercial rules for ROK Task Manager and
+        are not a substitute for professional legal advice. Loner's Corner should obtain
+        local legal review as the business grows or begins selling into additional jurisdictions.
+      </p>
     </div>
   </main>
 </body>
