@@ -1,367 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="ROK Task Manager — Windows automation for repetitive Rise of Kingdoms PC-client tasks, multi-account switching, map gathering, city routines and more." />
-  <title>ROK Task Manager | Loner's Corner</title>
-  <link rel="preload" as="image" href="assets/feature-summary.png" />
-  <link rel="icon" href="assets/loners-corner-logo.png" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ROK Task Manager — Windows automation for repetitive Rise of Kingdoms PC-client tasks, multi-account switching, map gathering, city routines and more." name="description"/>
+<title>ROK Task Manager | Loner's Corner</title>
+<link as="image" href="assets/feature-summary.png" rel="preload"/>
+<link href="assets/loners-corner-logo.png" rel="icon"/>
+<link href="styles.css" rel="stylesheet"/>
+<style>
+.requirements-section {
+  padding-top: 58px;
+  padding-bottom: 68px;
+}
+.requirements-copy h2 {
+  font-size: clamp(46px, 6vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+.requirements-copy .requirements-lead {
+  font-size: clamp(17px, 2vw, 21px);
+  max-width: 760px;
+}
+.requirements-warning-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 13px 17px;
+  border: 1px solid rgba(255, 173, 56, .45);
+  border-radius: 14px;
+  background: rgba(255, 126, 35, .08);
+  color: #ffd28b;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .04em;
+}
+.requirements-warning-link:hover {
+  border-color: rgba(255, 193, 92, .8);
+  color: #fff0c9;
+}
+.checkout-policy-note {
+  margin: 22px 0 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 750;
+}
+.checkout-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin: 0 0 18px;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.checkout-agreement input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  accent-color: var(--cyan);
+}
+.checkout-agreement a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#paypal-subscription-status {
+  line-height: 1.55;
+}
+.paypal-fulfillment {
+  display: none;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(83, 226, 143, .35);
+  border-radius: 14px;
+  background: rgba(83, 226, 143, .06);
+}
+.paypal-fulfillment.visible {
+  display: block;
+}
+.paypal-license-key {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.055);
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+.paypal-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+@media (max-width: 720px) {
+  .requirements-copy h2 {
+    font-size: clamp(40px, 12vw, 58px);
+  }
+}
+</style></head>
 <body>
-  <div class="ambient ambient-a"></div>
-  <div class="ambient ambient-b"></div>
-
-  <header class="site-header" id="top">
-    <div class="container nav-wrap">
-      <a class="brand" href="#top" aria-label="Loner's Corner home">
-        <img src="assets/loners-corner-logo.png" alt="Loner's Corner logo" />
-        <span>
-          <strong>ROK Task Manager</strong>
-          <small>by Loner's Corner</small>
-        </span>
-      </a>
-
-      <button class="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav id="nav-links" class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#demo">Free Demo</a>
-        <a href="#requirements">Requirements</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#faq">FAQ</a>
-        <a class="nav-cta js-discord-link" href="#">Discord</a>
-      </nav>
-    </div>
-  </header>
-
-  <main>
-    <section class="hero section">
-      <div class="container hero-grid">
-        <div class="hero-copy reveal">
-          <div class="eyebrow"><span class="status-dot"></span> Windows PC automation</div>
-          <h1>More time.<br /><span>Less repetition.</span></h1>
-          <p class="hero-sub">ROK Task Manager automates repetitive Rise of Kingdoms PC-client routines across your characters and accounts, so you can spend less time clicking through the same tasks every day.</p>
-          <p class="hero-sub"><strong>Primary focus:</strong> This automation focuses on resource gathering and Alliance Credit building.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
-            <a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try It Now — Free Demo</a>
-            <a class="btn btn-secondary" href="#features">Explore features</a>
-          </div>
-          <div class="hero-points">
-            <span>✓ Multi-account workflow</span>
-            <span>✓ Automated task cycles</span>
-            <span>✓ Built-in recovery logic</span>
-          </div>
-        </div>
-
-        <div class="hero-media reveal delay-1">
-          <div class="screen-card glow-card">
-            <img src="assets/feature-summary.png" alt="ROK Task Manager feature summary" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats-strip">
-      <div class="container stats-grid reveal">
-        <div><strong>9</strong><span>Automation systems</span></div>
-        <div><strong>5/5</strong><span>Troop queue protection</span></div>
-        <div><strong>1080p</strong><span>Optimized resolution</span></div>
-        <div><strong>PC</strong><span>Official client workflow</span></div>
-      </div>
-    </section>
-
-    <section class="section" id="demo">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="kicker">TRY BEFORE YOU BUY</span>
-          <h2>Try ROK Task Manager for free.</h2>
-          <p>
-            Download the Windows demo and experience the core multi-account workflow before subscribing.
-            The demo is intentionally limited, while still giving you a real feel for how ROK Task Manager works.
-          </p>
-        </div>
-
-        <div class="feature-card reveal" style="max-width:760px; margin:0 auto; min-height:auto;">
-          <h3 style="margin-top:0;">Free Demo — Windows PC</h3>
-          <p>
-            The demo includes Alliance Donation, Alliance Help, 1 Troop March, Pit March,
-            Automatic Character Switching, and Automatic Google Account Switching.
-          </p>
-
-          <div class="hero-points" style="margin-top:18px;">
-            <span>✓ No purchase required</span>
-            <span>✓ Runs on the official Windows PC client</span>
-            <span>✓ Uses the same supported 1920×1080 setup</span>
-          </div>
-
-          <div class="cta-actions" style="margin-top:24px;">
-            <a class="btn btn-primary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Download Free Demo</a>
-            <a class="btn btn-secondary" href="#requirements">Check Requirements</a>
-          </div>
-
-          <p style="margin-top:20px; color:var(--muted); font-size:12px; word-break:break-all;">
-            Demo v1.0.1 SHA256: <code>0fb998f2f3a28c64dbdb986e32724f3615a676ccee2d77156b46ee5c33cd07e3</code>
-          </p>
-
-          <p style="margin-top:10px; color:var(--muted); font-size:12px;">
-            Windows may display a security or SmartScreen warning for unsigned software.
-            Download only from this official Loner's Corner page or the linked GitHub release.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="features">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="kicker">CORE FEATURES</span>
-          <h2>Built for repetitive account management</h2>
-          <p>Choose the routines you want, start the task cycle, and let ROK Task Manager handle the repetitive sequence.</p>
-        </div>
-
-        <div class="feature-grid">
-          <article class="feature-card reveal">
-            <div class="feature-num">01</div>
-            <h3>City Maintenance</h3>
-            <p>Automates alliance territory rewards, tech donations, alliance help, and resource bubble collection.</p>
-          </article>
-          <article class="feature-card reveal delay-1">
-            <div class="feature-num">02</div>
-            <h3>1 Troop March</h3>
-            <p>Finds qualifying alliance builds, uses fallback logic when needed, and sends a one-troop march.</p>
-          </article>
-          <article class="feature-card reveal delay-2">
-            <div class="feature-num">03</div>
-            <h3>Pit March</h3>
-            <p>Opens the Alliance Resource Center, detects the target state, and creates the required march.</p>
-          </article>
-          <article class="feature-card reveal">
-            <div class="feature-num">04</div>
-            <h3>Automatic Map Gathering</h3>
-            <p>Supports food, wood, stone, gold or all resources with coordinate reading and duplicate-node protection.</p>
-          </article>
-          <article class="feature-card reveal delay-1">
-            <div class="feature-num">05</div>
-            <h3>Daily City Tasks</h3>
-            <p>Handles selected daily routines such as VIP rewards, mail, quests and campaign or expedition rewards.</p>
-          </article>
-          <article class="feature-card reveal delay-2">
-            <div class="feature-num">06</div>
-            <h3>Character & Account Switching</h3>
-            <p>Moves through starred characters and configured Google accounts while tracking completed cycles.</p>
-          </article>
-          <article class="feature-card reveal">
-            <div class="feature-num">07</div>
-            <h3>Troop Queue Protection</h3>
-            <p>Checks active troop capacity and skips troop-based routines when the queue is already full.</p>
-          </article>
-          <article class="feature-card reveal delay-1">
-            <div class="feature-num">08</div>
-            <h3>Recovery & Reliability</h3>
-            <p>Includes network disconnect handling, loading recovery, visual confirmation, and safe pause/resume controls.</p>
-          </article>
-          <article class="feature-card accent-card reveal delay-2">
-            <div class="feature-num">09</div>
-            <h3>Made for multi-account players</h3>
-            <p>Reduce repetitive account upkeep and keep your routine consistent across more characters.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section requirements-section" id="requirements">
-      <div class="container requirements-wrap">
-        <div class="requirements-copy reveal">
-          <span class="kicker">BEFORE YOU BUY</span>
-          <h2>System requirements</h2>
-          <p>ROK Task Manager relies on a consistent screen layout and visual detection. These settings matter.</p>
-          <div class="req-grid">
-            <div class="req"><b>Windows PC</b><span>Windows desktop only</span></div>
-            <div class="req"><b>Official PC client</b><span>No emulator support</span></div>
-            <div class="req"><b>1920 × 1080</b><span>1080p resolution</span></div>
-            <div class="req"><b>100% scaling</b><span>Windows display scale</span></div>
-            <div class="req"><b>Ultra graphics</b><span>Original map style, fullscreen</span></div>
-            <div class="req"><b>Alphanumeric names</b><span>Recommended for OCR reliability</span></div>
-          </div>
-        </div>
-        <div class="requirements-image reveal delay-1">
-          <img src="assets/feature-summary.png" alt="ROK Task Manager requirements overview" />
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="gallery">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="kicker">SEE IT IN ACTION</span>
-          <h2>Feature walkthroughs</h2>
-          <p>Explore the major automation workflows included in ROK Task Manager.</p>
-        </div>
-
-        <div class="gallery-grid">
-          <button class="gallery-card reveal" data-img="assets/city-maintenance.png" data-title="City Maintenance">
-            <img src="assets/city-maintenance.png" alt="City Maintenance automation" loading="lazy" />
-            <span>City Maintenance</span>
-          </button>
-          <button class="gallery-card reveal delay-1" data-img="assets/city-management.png" data-title="City Management">
-            <img src="assets/city-management.png" alt="City Management automation" loading="lazy" />
-            <span>City Management</span>
-          </button>
-          <button class="gallery-card reveal delay-2" data-img="assets/one-troop-march.png" data-title="1 Troop March">
-            <img src="assets/one-troop-march.png" alt="One Troop March automation" loading="lazy" />
-            <span>1 Troop March</span>
-          </button>
-          <button class="gallery-card reveal" data-img="assets/pit-march.png" data-title="Pit March">
-            <img src="assets/pit-march.png" alt="Pit March automation" loading="lazy" />
-            <span>Pit March</span>
-          </button>
-          <button class="gallery-card reveal delay-1" data-img="assets/map-gathering.png" data-title="Automatic Map Gathering">
-            <img src="assets/map-gathering.png" alt="Automatic Map Gathering" loading="lazy" />
-            <span>Map Gathering</span>
-          </button>
-          <button class="gallery-card reveal delay-2" data-img="assets/character-switching.png" data-title="Automatic Character Switching">
-            <img src="assets/character-switching.png" alt="Automatic Character Switching" loading="lazy" />
-            <span>Character Switching</span>
-          </button>
-          <button class="gallery-card reveal" data-img="assets/google-account-switching.png" data-title="Google Account Switching">
-            <img src="assets/google-account-switching.png" alt="Google Account Switching" loading="lazy" />
-            <span>Google Account Switching</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="section how-section">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="kicker">QUICK START</span>
-          <h2>From download to automation</h2>
-        </div>
-        <div class="steps">
-          <div class="step reveal"><span>1</span><h3>Get access</h3><p>Choose your plan and complete checkout securely with PayPal.</p></div>
-          <div class="step reveal delay-1"><span>2</span><h3>Install & activate</h3><p>Download the Windows build and activate your license.</p></div>
-          <div class="step reveal delay-2"><span>3</span><h3>Match requirements</h3><p>Use the supported client, resolution, scaling and graphics settings.</p></div>
-          <div class="step reveal"><span>4</span><h3>Select tasks</h3><p>Choose the routines you want ROK Task Manager to perform.</p></div>
-          <div class="step reveal delay-1"><span>5</span><h3>Start your cycle</h3><p>Run the workflow and monitor status from the task manager window.</p></div>
-        </div>
-      </div>
-    </section>
+<div class="ambient ambient-a"></div>
+<div class="ambient ambient-b"></div>
+<header class="site-header" id="top">
+<div class="container nav-wrap">
+<a aria-label="Loner's Corner home" class="brand" href="#top">
+<img alt="Loner's Corner logo" src="assets/loners-corner-logo.png"/>
+<span>
+<strong>ROK Task Manager</strong>
+<small>by Loner's Corner</small>
+</span>
+</a>
+<button aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation" class="menu-btn">
+<span></span><span></span><span></span>
+</button>
+<nav class="nav-links" id="nav-links">
 
 
-    <section class="section" id="subscribe">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="kicker">SECURE CHECKOUT</span>
-          <h2>ROK Task Manager Monthly</h2>
-          <p>$50.00 USD every month. Secure checkout is processed through PayPal.</p>
-        </div>
 
-        <div class="feature-card reveal" style="max-width:620px; margin:0 auto; min-height:auto;">
-          <h3 style="margin-top:0;">Monthly License — $50 USD</h3>
-          <p style="margin-bottom:22px;">One Windows PC license. Subscription renews monthly until cancelled.</p>
 
-          <div id="paypal-button-container-P-1SL81894FA907780YNKTKVGI"></div>
-          <div id="paypal-subscription-status" style="margin-top:18px; color:var(--muted); font-size:14px;"></div>
 
-          <p style="margin-top:18px; color:var(--muted); font-size:12px;">
-            After PayPal approval, the licensing server verifies the subscription and provides the customer license and private download access.
-          </p>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="faq">
-      <div class="container faq-wrap">
-        <div class="section-heading left reveal">
-          <span class="kicker">FAQ</span>
-          <h2>Questions before purchase</h2>
-          <p>Need help before buying? Join the Discord and ask in the ROK Task Manager support channels.</p>
-          <a class="btn btn-secondary js-discord-link" href="#">Join Discord</a>
-        </div>
-        <div class="faq-list reveal delay-1">
-          <details open>
-            <summary>Does it work with emulators?</summary>
-            <p>No. This build is designed for the official Windows PC client.</p>
-          </details>
-          <details>
-            <summary>What display settings are required?</summary>
-            <p>Use 1920×1080 resolution, 100% display scaling, fullscreen, Ultra graphics, and the original map style.</p>
-          </details>
-          <details>
-            <summary>Can it switch characters automatically?</summary>
-            <p>Yes. It can move through starred characters, track completed characters, and continue the task cycle after loading.</p>
-          </details>
-          <details>
-            <summary>Can it switch Google accounts?</summary>
-            <p>Yes, when accounts are configured in the supported setup. It can switch to the next account and continue the cycle after the game loads.</p>
-          </details>
-          <details>
-            <summary>What happens if my troop queue is full?</summary>
-            <p>The task manager can detect 5/5 active troops, skip troop-related routines, and continue eligible city tasks.</p>
-          </details>
-          <details>
-            <summary>Is there a free demo?</summary>
-            <p>
-              Yes. The free Windows demo includes Alliance Donation, Alliance Help,
-              1 Troop March, Pit March, Character Switching, and Google Account Switching.
-              The full paid version adds the complete automation feature set.
-            </p>
-          </details>
-          <details>
-            <summary>Is this an official Rise of Kingdoms product?</summary>
-            <p>No. ROK Task Manager is an independent third-party tool by Loner's Corner and is not affiliated with or endorsed by the game's publisher or developer.</p>
-          </details>
-        </div>
-      </div>
-    </section>
+<a href="#features">Features</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a></nav>
+</div>
+</header>
+<main>
+<section class="hero section">
+<div class="container hero-grid">
+<div class="hero-copy reveal">
+<div class="eyebrow"><span class="status-dot"></span> Windows PC automation</div>
+<h1>More time.<br/><span>Less repetition.</span></h1>
+<p class="hero-sub">ROK Task Manager automates repetitive Rise of Kingdoms PC-client routines across your characters and accounts, so you can spend less time clicking through the same tasks every day.</p>
+<p class="hero-sub"><strong>Primary focus:</strong> This automation focuses on resource gathering and Alliance Credit building.</p><a class="requirements-warning-link" href="#requirements">⚠ SYSTEM REQUIREMENTS — READ BEFORE DOWNLOAD OR PURCHASE</a>
+<div class="hero-actions">
+<a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
+<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try It Now — Free Demo</a>
+<a class="btn btn-secondary" href="#features">Explore features</a>
+</div>
+<div class="hero-points">
+<span>✓ Multi-account workflow</span>
+<span>✓ Automated task cycles</span>
+<span>✓ Built-in recovery logic</span>
+</div>
+</div>
+<div class="hero-media reveal delay-1">
+<div class="screen-card glow-card">
+<img alt="ROK Task Manager feature summary" src="assets/feature-summary.png"/>
+</div>
+</div>
+</div>
+</section><section class="section requirements-section" id="requirements"><div class="container requirements-wrap"><div class="requirements-copy reveal"><span class="kicker">PLEASE READ BEFORE USING THE DEMO OR PURCHASING</span><h2>SYSTEM REQUIREMENTS</h2><p class="requirements-lead">ROK Task Manager depends on a consistent Windows PC-client layout. Please confirm these settings before downloading the demo or subscribing.</p><div class="req-grid"><div class="req"><b>Windows PC only</b><span>Windows desktop environment</span></div><div class="req"><b>Official PC client only</b><span>No emulator support</span></div><div class="req"><b>1920 × 1080</b><span>1080p resolution</span></div><div class="req"><b>100% display scaling</b><span>Windows display scale</span></div><div class="req"><b>Ultra graphics</b><span>Original map style, fullscreen</span></div><div class="req"><b>Alphanumeric names</b><span>Recommended for OCR reliability</span></div></div></div><div class="requirements-image reveal delay-1"><img alt="ROK Task Manager system requirements and feature summary" src="assets/feature-summary.png"/></div></div></section>
+<section class="stats-strip">
+<div class="container stats-grid reveal"><div><strong>7</strong><span>Core automation tasks</span></div><div><strong>Multi</strong><span>Character &amp; account workflow</span></div><div><strong>1080p</strong><span>Required resolution</span></div><div><strong>PC</strong><span>Official Windows client</span></div></div>
+</section>
+<section class="section" id="demo"><div class="container"><div class="section-heading reveal"><span class="kicker">TRY BEFORE YOU BUY</span><h2>Try ROK Task Manager for free.</h2><p>Use the free Windows demo to test the core multi-account workflow before subscribing.</p></div><div class="feature-card reveal" style="max-width:760px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Free Demo — Windows PC</h3><p>Alliance Donation • Alliance Help • 1 Troop March • Gather Alliance Pit • Automatic Character Switching • Automatic Google Account Switching</p><div class="hero-points" style="margin-top:18px;"><span>✓ No purchase required</span><span>✓ Official Windows PC client</span><span>✓ 1920×1080 supported setup required</span></div><div class="cta-actions" style="margin-top:24px;"><a class="btn btn-primary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Download Free Demo</a><a class="btn btn-secondary" href="#requirements">Read System Requirements</a></div><p style="margin-top:16px; color:var(--muted); font-size:12px;">Windows may display a security or SmartScreen warning for unsigned software. Download only from this official Loner's Corner page or the linked GitHub release.</p></div></div></section>
+<section class="section" id="features"><div class="container"><div class="section-heading reveal"><span class="kicker">CORE FEATURES</span><h2>What ROK Task Manager does</h2></div><div class="feature-grid"><article class="feature-card reveal"><div class="feature-num">01</div><h3>City Maintenance</h3><p>Alliance territory rewards • Alliance tech donations • City Resources Collection • Alliance Help</p></article><article class="feature-card reveal delay-1"><div class="feature-num">02</div><h3>1 Troop March</h3><p>Sends 1 troop to a building fort.</p></article><article class="feature-card reveal delay-2"><div class="feature-num">03</div><h3>Gather Alliance Pit</h3><p>Sends preset 2 to the alliance resource pit.</p></article><article class="feature-card reveal"><div class="feature-num">04</div><h3>Automatic Map Gathering</h3><p>Gathers level 7–8 stone, wood, and food nodes; level 6–9 gold nodes depending on Home Kingdom or Lost Kingdom.</p></article><article class="feature-card reveal delay-1"><div class="feature-num">05</div><h3>City Management / Daily Tasks</h3><p>VIP rewards • Daily quests • Collect Mail Rewards • Chest claiming • Campaign / Expedition rewards</p></article><article class="feature-card reveal delay-2"><div class="feature-num">06</div><h3>Character Switching</h3><p>Auto switches to starred characters.</p></article><article class="feature-card reveal"><div class="feature-num">07</div><h3>Google Account Switching</h3><p>Auto switches to saved logins.</p></article></div></div></section>
 
-    <section class="cta-section section">
-      <div class="container cta-card reveal">
-        <div>
-          <span class="kicker">READY TO START?</span>
-          <h2>Put the repetitive work on autopilot.</h2>
-          <p>Review the requirements, choose your plan, and subscribe securely with PayPal.</p>
-        </div>
-        <div class="cta-actions">
-          <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
-          <a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try Free Demo</a>
-          <a class="btn btn-secondary js-discord-link" href="#">Ask on Discord</a>
-        </div>
-      </div>
-    </section>
-  </main>
+<section class="section" id="gallery">
+<div class="container">
+<div class="section-heading reveal">
+<span class="kicker">SEE IT IN ACTION</span>
+<h2>Feature walkthroughs</h2>
+<p>Explore the major automation workflows included in ROK Task Manager.</p>
+</div>
+<div class="gallery-grid">
+<button class="gallery-card reveal" data-img="assets/city-maintenance.png" data-title="City Maintenance">
+<img alt="City Maintenance automation" loading="lazy" src="assets/city-maintenance.png"/>
+<span>City Maintenance</span>
+</button>
+<button class="gallery-card reveal delay-1" data-img="assets/city-management.png" data-title="City Management">
+<img alt="City Management automation" loading="lazy" src="assets/city-management.png"/>
+<span>City Management</span>
+</button>
+<button class="gallery-card reveal delay-2" data-img="assets/one-troop-march.png" data-title="1 Troop March">
+<img alt="One Troop March automation" loading="lazy" src="assets/one-troop-march.png"/>
+<span>1 Troop March</span>
+</button>
+<button class="gallery-card reveal" data-img="assets/pit-march.png" data-title="Gather Alliance Pit">
+<img alt="Gather Alliance Pit automation" loading="lazy" src="assets/pit-march.png"/>
+<span>Gather Alliance Pit</span>
+</button>
+<button class="gallery-card reveal delay-1" data-img="assets/map-gathering.png" data-title="Automatic Map Gathering">
+<img alt="Automatic Map Gathering" loading="lazy" src="assets/map-gathering.png"/>
+<span>Map Gathering</span>
+</button>
+<button class="gallery-card reveal delay-2" data-img="assets/character-switching.png" data-title="Automatic Character Switching">
+<img alt="Automatic Character Switching" loading="lazy" src="assets/character-switching.png"/>
+<span>Character Switching</span>
+</button>
+<button class="gallery-card reveal" data-img="assets/google-account-switching.png" data-title="Google Account Switching">
+<img alt="Google Account Switching" loading="lazy" src="assets/google-account-switching.png"/>
+<span>Google Account Switching</span>
+</button>
+</div>
+</div>
+</section>
+<section class="section how-section">
+<div class="container">
+<div class="section-heading reveal">
+<span class="kicker">QUICK START</span>
+<h2>From download to automation</h2>
+</div>
+<div class="steps">
+<div class="step reveal"><span>1</span><h3>Get access</h3><p>Choose your plan and complete checkout securely with PayPal.</p></div>
+<div class="step reveal delay-1"><span>2</span><h3>Install &amp; activate</h3><p>Download the Windows build and activate your license.</p></div>
+<div class="step reveal delay-2"><span>3</span><h3>Match requirements</h3><p>Use the supported client, resolution, scaling and graphics settings.</p></div>
+<div class="step reveal"><span>4</span><h3>Select tasks</h3><p>Choose the routines you want ROK Task Manager to perform.</p></div>
+<div class="step reveal delay-1"><span>5</span><h3>Start your cycle</h3><p>Run the workflow and monitor status from the task manager window.</p></div>
+</div>
+</div>
+</section>
+<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>ROK Task Manager Monthly</h2><p>$50.00 USD every month. Secure checkout is processed through PayPal.</p></div><div class="feature-card reveal" style="max-width:620px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Monthly License — $50 USD</h3><p style="margin-bottom:16px;">One Windows PC license. Subscription renews monthly until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="paypal-button-container-P-1SL81894FA907780YNKTKVGI"></div><div id="paypal-subscription-status" style="margin-top:18px; color:var(--muted); font-size:14px;"></div><div aria-live="polite" class="paypal-fulfillment" id="paypal-fulfillment-result"></div><p style="margin-top:18px; color:var(--muted); font-size:12px;">After PayPal approval, the licensing server verifies the subscription and provides the customer license and private download access.</p></div></div></section>
+<section class="section" id="faq">
+<div class="container faq-wrap">
+<div class="section-heading left reveal">
+<span class="kicker">FAQ</span>
+<h2>Questions before purchase</h2>
+<p>Need help before buying? Join the Discord and ask in the ROK Task Manager support channels.</p>
+<a class="btn btn-secondary js-discord-link" href="#">Join Discord</a>
+</div>
+<div class="faq-list reveal delay-1">
+<details open="">
+<summary>Does it work with emulators?</summary>
+<p>No. This build is designed for the official Windows PC client.</p>
+</details>
+<details>
+<summary>What display settings are required?</summary>
+<p>Use 1920×1080 resolution, 100% display scaling, fullscreen, Ultra graphics, and the original map style.</p>
+</details>
+<details>
+<summary>Can it switch characters automatically?</summary>
+<p>Yes. It auto switches to starred characters.</p>
+</details>
+<details>
+<summary>Can it switch Google accounts?</summary>
+<p>Yes. It auto switches to saved logins.</p>
+</details>
 
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <img src="assets/loners-corner-logo.png" alt="Loner's Corner" />
-        <div><strong>ROK Task Manager</strong><span>by Loner's Corner</span></div>
-      </div>
-      <div class="footer-links">
-        <a href="#requirements">Requirements</a>
-        <a href="#faq">FAQ</a>
-        <a href="legal.html">Terms & Disclaimer</a>
-        <a class="js-discord-link" href="#">Support</a>
-      </div>
-    </div>
-    <div class="container legal-note">
-      <p>ROK Task Manager is an independent third-party automation utility. It is not affiliated with, sponsored by, or endorsed by Lilith Games or Rise of Kingdoms. Users are responsible for reviewing and complying with the applicable game terms and policies.</p>
-      <p>© <span id="year"></span> Loner's Corner. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <dialog class="lightbox" id="lightbox">
-    <button class="lightbox-close" aria-label="Close image">×</button>
-    <img src="" alt="" id="lightbox-img" />
-    <p id="lightbox-title"></p>
-  </dialog>
-
-  <script src="https://www.paypal.com/sdk/js?client-id=BAApg80nWWoxeZcMdnWlYgOHYgx8raX6HckSaidIQUo5kpar9TrUSpQHocpqsJ4iXYTPiiEWrhoqRkC5L8&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-  <script src="script.js"></script>
+<details>
+<summary>Is there a free demo?</summary>
+<p>Yes. The free Windows demo includes Alliance Donation, Alliance Help, 1 Troop March, Gather Alliance Pit, Character Switching, and Google Account Switching. The full paid version adds the complete automation feature set.</p>
+</details>
+<details>
+<summary>Is this an official Rise of Kingdoms product?</summary>
+<p>No. ROK Task Manager is an independent third-party tool by Loner's Corner and is not affiliated with or endorsed by the game's publisher or developer.</p>
+</details>
+</div>
+</div>
+</section>
+<section class="cta-section section">
+<div class="container cta-card reveal">
+<div>
+<span class="kicker">READY TO START?</span>
+<h2>Put the repetitive work on autopilot.</h2>
+<p>Review the requirements, choose your plan, and subscribe securely with PayPal.</p>
+</div>
+<div class="cta-actions">
+<a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
+<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try Free Demo</a>
+<a class="btn btn-secondary js-discord-link" href="#">Ask on Discord</a>
+</div>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="container footer-grid">
+<div class="footer-brand">
+<img alt="Loner's Corner" src="assets/loners-corner-logo.png"/>
+<div><strong>ROK Task Manager</strong><span>by Loner's Corner</span></div>
+</div>
+<div class="footer-links">
+<a href="#requirements">Requirements</a>
+<a href="#faq">FAQ</a>
+<a href="legal.html">Terms &amp; Disclaimer</a>
+<a class="js-discord-link" href="#">Support</a>
+</div>
+</div>
+<div class="container legal-note">
+<p>ROK Task Manager is an independent third-party automation utility. It is not affiliated with, sponsored by, or endorsed by Lilith Games or Rise of Kingdoms. Users are responsible for reviewing and complying with the applicable game terms and policies.</p>
+<p>© <span id="year"></span> Loner's Corner. All rights reserved.</p>
+</div>
+</footer>
+<dialog class="lightbox" id="lightbox">
+<button aria-label="Close image" class="lightbox-close">×</button>
+<img alt="" id="lightbox-img" src=""/>
+<p id="lightbox-title"></p>
+</dialog>
+<script data-sdk-integration-source="button-factory" src="https://www.paypal.com/sdk/js?client-id=BAApg80nWWoxeZcMdnWlYgOHYgx8raX6HckSaidIQUo5kpar9TrUSpQHocpqsJ4iXYTPiiEWrhoqRkC5L8&amp;vault=true&amp;intent=subscription&amp;currency=USD&amp;components=buttons"></script>
+<script src="script.js"></script>
 </body>
 </html>
