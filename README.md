@@ -1,20 +1,13 @@
+# ROK Task Manager Website
 
+## Production checkout
 
-## Private Whop checkout test
+The public website uses Whop for the $50/month ROK Task Manager subscription.
 
-The normal public page still uses the existing PayPal checkout. The Whop integration is intentionally hidden while fulfillment is being verified.
+The browser calls the production Loner's Corner licensing server to create a Whop checkout. A one-time claim token is kept in `sessionStorage` in the same browser tab and is not placed in the URL. When Whop redirects the customer back with `?whop=complete`, the site verifies fulfillment with the production licensing server and displays the issued license key and private download access.
 
-After deploying this build, open:
+Production licensing server:
 
-`https://loners-corner-license-server.github.io/rok-task-manager/?whoptest=1#subscribe`
+`https://loners-corner-license-server.onrender.com`
 
-The private Whop panel will create a server-side checkout, keep the one-time claim token in `sessionStorage`, redirect to Whop in the same tab, and automatically claim the license when Whop returns to `?whop=complete`. The claim token is never placed in the URL.
-
-Do not make the Whop panel public until the controlled payment/fulfillment test has passed.
-
-
-## Whop sandbox test mode
-
-Private test URL: `?whoptest=1#subscribe`
-
-This build sends only the private Whop test flow to `https://loners-corner-license-sandbox.onrender.com`. The normal PayPal storefront remains unchanged. Whop sandbox payments use fake money only.
+The public website uses Whop for checkout and license fulfillment. These website files do not modify the licensing server or desktop application.

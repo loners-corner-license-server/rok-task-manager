@@ -1,5 +1,5 @@
 // ROK Task Manager website - production browser code.
-// Public browser identifiers only. No PayPal secret or server secret is stored here.
+// Public browser code only. No payment-provider or server secrets are stored here.
 
 const LINKS = {
   discord: "https://discord.gg/bmzc7x5ZA"
@@ -11,102 +11,28 @@ document.querySelectorAll(".js-discord-link").forEach((a) => {
   a.rel = "noopener noreferrer";
 });
 
-const PAYPAL_PLAN_ID = "P-1SL81894FA907780YNKTKVGI";
-const PAYPAL_CLAIM_URL =
-  "https://loners-corner-license-server.onrender.com/paypal/claim-license";
-
-const paypalStatus = document.getElementById("paypal-subscription-status");
-const paypalResult = document.getElementById("paypal-fulfillment-result");
 const agreement = document.getElementById("checkout-agreement");
-let activeClaimToken = null;
-
-function setPayPalStatus(lines) {
-  if (!paypalStatus) return;
-
-  paypalStatus.replaceChildren();
-  const rows = Array.isArray(lines) ? lines : [{ text: String(lines || "") }];
-
-  rows.forEach((line, index) => {
-    const row = document.createElement("div");
-
-    if (line.strong) {
-      const strong = document.createElement("strong");
-      strong.textContent = line.text;
-      row.appendChild(strong);
-    } else if (line.code) {
-      row.append(document.createTextNode(line.prefix || ""));
-      const code = document.createElement("code");
-      code.textContent = line.text;
-      row.appendChild(code);
-    } else {
-      row.textContent = line.text;
-    }
-
-    paypalStatus.appendChild(row);
-
-    if (index < rows.length - 1) {
-      paypalStatus.appendChild(document.createElement("br"));
-    }
-  });
-}
-
-function createClaimToken() {
-  if (!window.crypto || !window.crypto.getRandomValues) {
-    throw new Error("Secure browser random generation is unavailable.");
-  }
-
-  const bytes = new Uint8Array(32);
-  window.crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-async function claimPayPalLicense(subscriptionID, claimToken) {
-  const response = await fetch(PAYPAL_CLAIM_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      subscription_id: subscriptionID,
-      claim_token: claimToken
-    })
-  });
-
-  let result = null;
-
-  try {
-    result = await response.json();
-  } catch (error) {
-    throw new Error("The licensing server returned an unreadable response.");
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      (result && (result.detail || result.reason)) ||
-        "The licensing server could not fulfill this subscription."
-    );
-  }
-
-  return result;
-}
+const fulfillmentResult = document.getElementById("fulfillment-result");
 
 function showFulfillment(result) {
-  if (!paypalResult) return;
+  if (!fulfillmentResult) return;
 
-  paypalResult.replaceChildren();
-  paypalResult.classList.remove("visible");
+  fulfillmentResult.replaceChildren();
+  fulfillmentResult.classList.remove("visible");
 
   if (!result || result.fulfilled !== true || !result.license_key) return;
 
   const title = document.createElement("strong");
   title.textContent = "Subscription verified — your license is ready.";
-  paypalResult.appendChild(title);
+  fulfillmentResult.appendChild(title);
 
   const key = document.createElement("div");
-  key.className = "paypal-license-key";
+  key.className = "license-key";
   key.textContent = result.license_key;
-  paypalResult.appendChild(key);
+  fulfillmentResult.appendChild(key);
 
   const actions = document.createElement("div");
-  actions.className = "paypal-result-actions";
+  actions.className = "result-actions";
 
   const copyButton = document.createElement("button");
   copyButton.type = "button";
@@ -135,176 +61,28 @@ function showFulfillment(result) {
     actions.appendChild(download);
   }
 
-  paypalResult.appendChild(actions);
+  fulfillmentResult.appendChild(actions);
 
   if (result.download_error) {
     const note = document.createElement("p");
     note.style.marginBottom = "0";
     note.style.color = "var(--muted)";
     note.textContent = result.download_error;
-    paypalResult.appendChild(note);
+    fulfillmentResult.appendChild(note);
   }
 
-  paypalResult.classList.add("visible");
+  fulfillmentResult.classList.add("visible");
 }
 
-const paypalContainer = document.getElementById(
-  `paypal-button-container-${PAYPAL_PLAN_ID}`
-);
-
-if (window.paypal && paypalContainer) {
-  paypal.Buttons({
-    style: {
-      shape: "pill",
-      color: "gold",
-      layout: "vertical",
-      label: "subscribe"
-    },
-
-    onClick: function (data, actions) {
-      if (!agreement || !agreement.checked) {
-        setPayPalStatus([
-          {
-            text:
-              "Please agree to the Subscription, Cancellation & Refund Policy and Terms before checkout.",
-            strong: true
-          }
-        ]);
-        agreement?.focus();
-        return actions.reject();
-      }
-
-      setPayPalStatus("");
-      return actions.resolve();
-    },
-
-    createSubscription: function (data, actions) {
-      activeClaimToken = createClaimToken();
-      setPayPalStatus("Opening secure PayPal checkout...");
-
-      return actions.subscription.create({
-        plan_id: PAYPAL_PLAN_ID,
-        custom_id: activeClaimToken
-      });
-    },
-
-    onApprove: async function (data) {
-      const subscriptionID = String(data.subscriptionID || "").trim();
-      const claimToken = String(activeClaimToken || "").trim();
-
-      if (!subscriptionID || claimToken.length < 32) {
-        setPayPalStatus([
-          {
-            text:
-              "PayPal approved the checkout, but the secure fulfillment information is incomplete.",
-            strong: true
-          },
-          {
-            text:
-              "Please contact Loner's Corner support before attempting another payment."
-          }
-        ]);
-        return;
-      }
-
-      setPayPalStatus([
-        { text: "PayPal approved the subscription.", strong: true },
-        { prefix: "Subscription ID: ", text: subscriptionID, code: true },
-        { text: "Verifying the subscription and preparing your license..." }
-      ]);
-
-      try {
-        const result = await claimPayPalLicense(subscriptionID, claimToken);
-
-        if (result && result.fulfilled === true) {
-          setPayPalStatus([
-            { text: "Payment verified successfully.", strong: true },
-            { prefix: "Subscription ID: ", text: subscriptionID, code: true },
-            { text: "Your license and private download access are ready below." }
-          ]);
-
-          showFulfillment(result);
-          activeClaimToken = null;
-          return;
-        }
-
-        setPayPalStatus([
-          { text: "The subscription could not be fulfilled yet.", strong: true },
-          {
-            text:
-              (result && result.reason) ||
-              "Please contact Loner's Corner support with your PayPal subscription ID."
-          }
-        ]);
-      } catch (error) {
-        console.error("PayPal fulfillment error:", error);
-
-        setPayPalStatus([
-          {
-            text:
-              "PayPal checkout was approved, but license fulfillment could not be completed.",
-            strong: true
-          },
-          { prefix: "Subscription ID: ", text: subscriptionID, code: true },
-          {
-            text:
-              error && error.message
-                ? error.message
-                : "Please contact Loner's Corner support."
-          }
-        ]);
-      }
-    },
-
-    onCancel: function () {
-      activeClaimToken = null;
-      setPayPalStatus("PayPal checkout was cancelled.");
-    },
-
-    onError: function (err) {
-      activeClaimToken = null;
-      console.error("PayPal subscription error:", err);
-
-      setPayPalStatus([
-        { text: "PayPal checkout encountered an error.", strong: true },
-        {
-          text:
-            "Please try again. If the PayPal window closes immediately, use a buyer PayPal account rather than the seller account."
-        }
-      ]);
-    }
-  })
-    .render(`#paypal-button-container-${PAYPAL_PLAN_ID}`)
-    .catch((error) => {
-      console.error("PayPal button render error:", error);
-      setPayPalStatus([
-        {
-          text: "PayPal checkout could not be loaded. Please refresh the page.",
-          strong: true
-        }
-      ]);
-    });
-} else if (paypalContainer) {
-  setPayPalStatus([
-    {
-      text: "PayPal checkout could not be loaded. Please refresh the page.",
-      strong: true
-    }
-  ]);
-}
-
-
 // ----------------------------------------------------------
-// Private Whop SANDBOX checkout integration test
+// Production Whop checkout integration
 // ----------------------------------------------------------
-// The public site remains on its existing PayPal flow unless the page is opened
-// with ?whoptest=1 or Whop redirects the buyer back with ?whop=complete.
 // The one-time Whop claim token is kept only in sessionStorage for this browser
 // tab. It is never placed in a URL or sent anywhere except the licensing server.
 const WHOP_CREATE_CHECKOUT_URL =
-  "https://loners-corner-license-sandbox.onrender.com/whop/create-checkout";
+  "https://loners-corner-license-server.onrender.com/whop/create-checkout";
 const WHOP_CLAIM_LICENSE_URL =
-  "https://loners-corner-license-sandbox.onrender.com/whop/claim-license";
+  "https://loners-corner-license-server.onrender.com/whop/claim-license";
 const WHOP_CLAIM_STORAGE_KEY = "lc_rok_whop_claim_v1";
 
 const whopPanel = document.getElementById("whop-test-panel");
@@ -313,7 +91,6 @@ const whopStatus = document.getElementById("whop-checkout-status");
 const checkoutProviderCopy = document.getElementById("checkout-provider-copy");
 const checkoutFulfillmentNote = document.getElementById("checkout-fulfillment-note");
 const pageParams = new URLSearchParams(window.location.search);
-const whopTestMode = pageParams.get("whoptest") === "1";
 const whopReturnMode = pageParams.get("whop") === "complete";
 
 function setWhopStatus(lines) {
@@ -516,20 +293,17 @@ async function completeWhopPurchase() {
   ]);
 }
 
-if ((whopTestMode || whopReturnMode) && whopPanel) {
+if (whopPanel) {
   whopPanel.hidden = false;
-
-  if (paypalContainer) paypalContainer.hidden = true;
-  if (paypalStatus) paypalStatus.hidden = true;
 
   if (checkoutProviderCopy) {
     checkoutProviderCopy.textContent =
-      "$50.00 USD every month. SANDBOX TEST — no real money is charged.";
+      "$50.00 USD every month. Secure checkout is processed through Whop.";
   }
 
   if (checkoutFulfillmentNote) {
     checkoutFulfillmentNote.textContent =
-      "After the Whop sandbox confirms the fake payment, the sandbox licensing server issues a test license and private download access.";
+      "After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.";
   }
 }
 

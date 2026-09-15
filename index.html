@@ -75,10 +75,10 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-#paypal-subscription-status {
+#checkout-status {
   line-height: 1.55;
 }
-.paypal-fulfillment {
+.fulfillment-result {
   display: none;
   margin-top: 18px;
   padding: 16px;
@@ -86,10 +86,10 @@
   border-radius: 14px;
   background: rgba(83, 226, 143, .06);
 }
-.paypal-fulfillment.visible {
+.fulfillment-result.visible {
   display: block;
 }
-.paypal-license-key {
+.license-key {
   margin: 10px 0;
   padding: 10px 12px;
   border-radius: 10px;
@@ -98,7 +98,7 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 13px;
 }
-.paypal-result-actions {
+.result-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -213,7 +213,7 @@
 <h2>From download to automation</h2>
 </div>
 <div class="steps">
-<div class="step reveal"><span>1</span><h3>Get access</h3><p>Choose your plan and complete checkout securely with PayPal.</p></div>
+<div class="step reveal"><span>1</span><h3>Get access</h3><p>Choose your plan and complete checkout securely with Whop.</p></div>
 <div class="step reveal delay-1"><span>2</span><h3>Install &amp; activate</h3><p>Download the Windows build and activate your license.</p></div>
 <div class="step reveal delay-2"><span>3</span><h3>Match requirements</h3><p>Use the supported client, resolution, scaling and graphics settings.</p></div>
 <div class="step reveal"><span>4</span><h3>Select tasks</h3><p>Choose the routines you want ROK Task Manager to perform.</p></div>
@@ -221,7 +221,7 @@
 </div>
 </div>
 </section>
-<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>ROK Task Manager Monthly</h2><p id="checkout-provider-copy">$50.00 USD every month. Secure checkout is processed through PayPal.</p></div><div class="feature-card reveal" style="max-width:620px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Monthly License — $50 USD</h3><p style="margin-bottom:16px;">One Windows PC license. Subscription renews monthly until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" hidden style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Whop SANDBOX integration test</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">This panel appears only in the private Whop sandbox test flow. No real money is charged. Use Whop sandbox test payment details only.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop Sandbox — $50/month TEST</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div></div><div id="paypal-button-container-P-1SL81894FA907780YNKTKVGI"></div><div id="paypal-subscription-status" style="margin-top:18px; color:var(--muted); font-size:14px;"></div><div aria-live="polite" class="paypal-fulfillment" id="paypal-fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After PayPal approval, the licensing server verifies the subscription and provides the customer license and private download access.</p></div></div></section>
+<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>ROK Task Manager Monthly</h2><p id="checkout-provider-copy">$50.00 USD every month. Secure checkout is processed through Whop.</p></div><div class="feature-card reveal" style="max-width:620px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Monthly License — $50 USD</h3><p style="margin-bottom:16px;">One Windows PC license. Subscription renews monthly until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Secure checkout with Whop</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">Complete checkout securely through Whop. After payment is verified, your license key and private download access will be provided here.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop — $50/month</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div></div><div aria-live="polite" class="fulfillment-result" id="fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.</p></div></div></section>
 <section class="section" id="faq">
 <div class="container faq-wrap">
 <div class="section-heading left reveal">
@@ -264,7 +264,7 @@
 <div>
 <span class="kicker">READY TO START?</span>
 <h2>Put the repetitive work on autopilot.</h2>
-<p>Review the requirements, choose your plan, and subscribe securely with PayPal.</p>
+<p>Review the requirements, choose your plan, and subscribe securely with Whop.</p>
 </div>
 <div class="cta-actions">
 <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
@@ -297,7 +297,6 @@
 <img alt="" id="lightbox-img" src=""/>
 <p id="lightbox-title"></p>
 </dialog>
-<script data-sdk-integration-source="button-factory" src="https://www.paypal.com/sdk/js?client-id=BAApg80nWWoxeZcMdnWlYgOHYgx8raX6HckSaidIQUo5kpar9TrUSpQHocpqsJ4iXYTPiiEWrhoqRkC5L8&amp;vault=true&amp;intent=subscription&amp;currency=USD&amp;components=buttons"></script>
 <script src="script.js"></script>
 </body>
 </html>
