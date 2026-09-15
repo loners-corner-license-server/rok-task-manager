@@ -295,16 +295,16 @@ if (window.paypal && paypalContainer) {
 
 
 // ----------------------------------------------------------
-// Private Whop checkout integration test
+// Private Whop SANDBOX checkout integration test
 // ----------------------------------------------------------
 // The public site remains on its existing PayPal flow unless the page is opened
 // with ?whoptest=1 or Whop redirects the buyer back with ?whop=complete.
 // The one-time Whop claim token is kept only in sessionStorage for this browser
 // tab. It is never placed in a URL or sent anywhere except the licensing server.
 const WHOP_CREATE_CHECKOUT_URL =
-  "https://loners-corner-license-server.onrender.com/whop/create-checkout";
+  "https://loners-corner-license-sandbox.onrender.com/whop/create-checkout";
 const WHOP_CLAIM_LICENSE_URL =
-  "https://loners-corner-license-server.onrender.com/whop/claim-license";
+  "https://loners-corner-license-sandbox.onrender.com/whop/claim-license";
 const WHOP_CLAIM_STORAGE_KEY = "lc_rok_whop_claim_v1";
 
 const whopPanel = document.getElementById("whop-test-panel");
@@ -524,12 +524,12 @@ if ((whopTestMode || whopReturnMode) && whopPanel) {
 
   if (checkoutProviderCopy) {
     checkoutProviderCopy.textContent =
-      "$50.00 USD every month. This private test uses secure Whop checkout.";
+      "$50.00 USD every month. SANDBOX TEST — no real money is charged.";
   }
 
   if (checkoutFulfillmentNote) {
     checkoutFulfillmentNote.textContent =
-      "After Whop confirms payment, the licensing server issues the customer license and private download access.";
+      "After the Whop sandbox confirms the fake payment, the sandbox licensing server issues a test license and private download access.";
   }
 }
 
