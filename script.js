@@ -522,17 +522,66 @@ async function setupPrivatePayPalHostedButtonTest() {
   const recoverButton = panel.querySelector("#paypal-recover-button");
   const recoverStatus = panel.querySelector("#paypal-recover-status");
 
-  const update = () => {
-    const allowed = Boolean(agreement && agreement.checked);
-    wrap.hidden = !allowed;
+  let paypalButtonRendered = false;
+  let paypalButtonRendering = false;
+  let paypalSdk = null;
+
+  const setReadyStatus = () => {
     const pending = getPendingPayPalRenewal();
-    if (!allowed) {
-      status.textContent = "Agree to the terms above to reveal the PayPal payment buttons.";
-    } else if (pending) {
+    if (pending) {
       status.textContent = `Renewal selected for ${maskLicenseKey(pending)}. This $50 payment will extend that same key by 30 days.`;
     } else {
       status.textContent = "PayPal button ready. A new $50 payment creates a 30-day LC-ROK license.";
     }
+  };
+
+  const renderPayPalButton = async () => {
+    if (!agreement?.checked || paypalButtonRendered || paypalButtonRendering) return;
+
+    paypalButtonRendering = true;
+    wrap.hidden = false;
+    status.textContent = "Loading secure PayPal checkout...";
+
+    try {
+      paypalSdk = paypalSdk || await loadPayPalHostedButtonSdk();
+      if (!paypalSdk || typeof paypalSdk.HostedButtons !== "function") {
+        throw new Error("PayPal Hosted Buttons are unavailable in this browser.");
+      }
+
+      // The Hosted Button must be rendered only after its container is visible.
+      // Rendering it while hidden can leave an empty container permanently.
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      await paypalSdk.HostedButtons({ hostedButtonId: PAYPAL_HOSTED_BUTTON_ID })
+        .render(`#paypal-container-${PAYPAL_HOSTED_BUTTON_ID}`);
+
+      paypalButtonRendered = true;
+      setReadyStatus();
+    } catch (error) {
+      console.error("PayPal Hosted Button setup error:", error);
+      wrap.hidden = false;
+      status.textContent = error && error.message ? error.message : "PayPal checkout could not be loaded.";
+      status.style.color = "#ffb4b4";
+    } finally {
+      paypalButtonRendering = false;
+    }
+  };
+
+  const update = () => {
+    const allowed = Boolean(agreement && agreement.checked);
+    wrap.hidden = !allowed;
+    status.style.color = "var(--muted)";
+
+    if (!allowed) {
+      status.textContent = "Agree to the terms above to reveal the PayPal payment buttons.";
+      return;
+    }
+
+    if (paypalButtonRendered) {
+      setReadyStatus();
+      return;
+    }
+
+    void renderPayPalButton();
   };
   agreement?.addEventListener("change", update);
   update();
@@ -605,18 +654,6 @@ async function setupPrivatePayPalHostedButtonTest() {
     }
   });
 
-  try {
-    const paypalSdk = await loadPayPalHostedButtonSdk();
-    if (!paypalSdk || typeof paypalSdk.HostedButtons !== "function") {
-      throw new Error("PayPal Hosted Buttons are unavailable in this browser.");
-    }
-    paypalSdk.HostedButtons({ hostedButtonId: PAYPAL_HOSTED_BUTTON_ID })
-      .render(`#paypal-container-${PAYPAL_HOSTED_BUTTON_ID}`);
-  } catch (error) {
-    console.error("PayPal Hosted Button setup error:", error);
-    wrap.hidden = false;
-    status.textContent = error && error.message ? error.message : "PayPal checkout could not be loaded.";
-  }
 }
 
 function showPayPalOneTimeFulfillment(result) {
