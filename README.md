@@ -1,16 +1,13 @@
 # ROK Task Manager Website
 
-Production website with the existing Whop checkout/recovery flow unchanged.
+## Production checkout
 
-## Private PayPal one-time Hosted Button test
+The public website uses Whop for the $50/month ROK Task Manager subscription.
 
-Open:
+The browser calls the production Loner's Corner licensing server to create a Whop checkout. A one-time claim token is kept in `sessionStorage` in the same browser tab and is not placed in the URL. When Whop redirects the customer back with `?whop=complete`, the site verifies fulfillment with the production licensing server and displays the issued license key and private download access.
 
-`https://loners-corner-license-server.github.io/rok-task-manager/?paypalbuytest=1#subscribe`
+Production licensing server:
 
-This reveals a LIVE PayPal Hosted Button for the $50.00 USD one-time product only after the terms checkbox is selected. Do not complete a real payment until server-side one-time payment fulfillment is connected and tested.
+`https://loners-corner-license-server.onrender.com`
 
-Hosted Button ID: `U9JKAPLL78JQW`
-Currency: USD
-
-The normal website remains Whop-only when the query parameter is absent.
+The public website uses Whop for checkout and license fulfillment. These website files do not modify the licensing server or desktop application.
