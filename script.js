@@ -44,11 +44,11 @@ const whopReturnMode = pageParams.get("whop") === "complete";
 
 
 // ----------------------------------------------------------
-// Private LIVE PayPal one-time Hosted Button test
+// Public PayPal one-time Hosted Button checkout
 // ----------------------------------------------------------
-// Enabled with ?paypalbuytest=1. The normal public page remains Whop-only.
+// PayPal is publicly available alongside Whop.
 // PayPal auto-return uses ?paypal=complete after a successful payment.
-const PAYPAL_BUY_TEST_MODE = pageParams.get("paypalbuytest") === "1";
+const PAYPAL_PUBLIC_ENABLED = true;
 const PAYPAL_ONE_TIME_RETURN_MODE = pageParams.get("paypal") === "complete";
 const PAYPAL_HOSTED_CLIENT_ID =
   "BAA_AuZKrPiywBR6mlKzE8Plni5gHF_ivKqs1ZIiVE7alZ1xdGqytzR1br1eooOhZKxr5AgK59FZcVnrwM";
@@ -460,8 +460,8 @@ function showFulfillment(result, options = {}) {
 }
 
 
-async function setupPrivatePayPalHostedButtonTest() {
-  if (!PAYPAL_BUY_TEST_MODE || !whopPanel) return;
+async function setupPublicPayPalHostedButton() {
+  if (!PAYPAL_PUBLIC_ENABLED || !whopPanel) return;
 
   const panel = document.createElement("div");
   panel.id = "paypal-hosted-test-panel";
@@ -800,8 +800,8 @@ function setupPayPalOneTimeReturnRecovery() {
   }
 }
 
-setupPrivatePayPalHostedButtonTest().catch((error) => {
-  console.error("Private PayPal Hosted Button test startup error:", error);
+setupPublicPayPalHostedButton().catch((error) => {
+  console.error("PayPal Hosted Button startup error:", error);
 });
 setupPayPalOneTimeReturnRecovery();
 
@@ -975,13 +975,13 @@ if (whopPanel) {
   whopPanel.hidden = false;
 
   if (checkoutProviderCopy) {
-    checkoutProviderCopy.textContent = PAYPAL_BUY_TEST_MODE
+    checkoutProviderCopy.textContent = PAYPAL_PUBLIC_ENABLED
       ? "One Windows PC license. Choose automatic monthly billing with Whop or a one-time 30-day payment with PayPal."
       : "$50.00 USD every month. Secure checkout is processed through Whop.";
   }
 
   if (checkoutFulfillmentNote) {
-    checkoutFulfillmentNote.textContent = PAYPAL_BUY_TEST_MODE
+    checkoutFulfillmentNote.textContent = PAYPAL_PUBLIC_ENABLED
       ? "After payment is confirmed, the licensing server verifies the purchase and provides your license key and private download access."
       : "After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.";
   }
