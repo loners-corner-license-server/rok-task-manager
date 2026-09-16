@@ -14,75 +14,19 @@ document.querySelectorAll(".js-discord-link").forEach((a) => {
 const agreement = document.getElementById("checkout-agreement");
 const fulfillmentResult = document.getElementById("fulfillment-result");
 
-function showFulfillment(result) {
-  if (!fulfillmentResult) return;
-
-  fulfillmentResult.replaceChildren();
-  fulfillmentResult.classList.remove("visible");
-
-  if (!result || result.fulfilled !== true || !result.license_key) return;
-
-  const title = document.createElement("strong");
-  title.textContent = "Subscription verified — your license is ready.";
-  fulfillmentResult.appendChild(title);
-
-  const key = document.createElement("div");
-  key.className = "license-key";
-  key.textContent = result.license_key;
-  fulfillmentResult.appendChild(key);
-
-  const actions = document.createElement("div");
-  actions.className = "result-actions";
-
-  const copyButton = document.createElement("button");
-  copyButton.type = "button";
-  copyButton.className = "btn btn-secondary";
-  copyButton.textContent = "Copy License Key";
-  copyButton.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(result.license_key);
-      copyButton.textContent = "Copied";
-      setTimeout(() => {
-        copyButton.textContent = "Copy License Key";
-      }, 1800);
-    } catch (error) {
-      console.error("Clipboard error:", error);
-    }
-  });
-  actions.appendChild(copyButton);
-
-  if (result.download_url) {
-    const download = document.createElement("a");
-    download.className = "btn btn-primary";
-    download.href = result.download_url;
-    download.target = "_blank";
-    download.rel = "noopener noreferrer";
-    download.textContent = "Download ROK Task Manager";
-    actions.appendChild(download);
-  }
-
-  fulfillmentResult.appendChild(actions);
-
-  if (result.download_error) {
-    const note = document.createElement("p");
-    note.style.marginBottom = "0";
-    note.style.color = "var(--muted)";
-    note.textContent = result.download_error;
-    fulfillmentResult.appendChild(note);
-  }
-
-  fulfillmentResult.classList.add("visible");
-}
-
 // ----------------------------------------------------------
 // Production Whop checkout integration
 // ----------------------------------------------------------
-// The one-time Whop claim token is kept only in sessionStorage for this browser
-// tab. It is never placed in a URL or sent anywhere except the licensing server.
+// The checkout claim stays in sessionStorage for the lifetime of this browser
+// tab. It survives refreshes, is never placed in the URL, and is sent only to
+// the licensing server. If the tab/session is lost, an LC-ROK license key can
+// recover access through the server-side recovery endpoint.
 const WHOP_CREATE_CHECKOUT_URL =
   "https://loners-corner-license-server.onrender.com/whop/create-checkout";
 const WHOP_CLAIM_LICENSE_URL =
   "https://loners-corner-license-server.onrender.com/whop/claim-license";
+const WHOP_RECOVER_LICENSE_URL =
+  "https://loners-corner-license-server.onrender.com/whop/recover-license";
 const WHOP_CLAIM_STORAGE_KEY = "lc_rok_whop_claim_v1";
 
 const whopPanel = document.getElementById("whop-test-panel");
@@ -90,6 +34,11 @@ const whopButton = document.getElementById("whop-checkout-button");
 const whopStatus = document.getElementById("whop-checkout-status");
 const checkoutProviderCopy = document.getElementById("checkout-provider-copy");
 const checkoutFulfillmentNote = document.getElementById("checkout-fulfillment-note");
+const whopRecovery = document.getElementById("whop-recovery");
+const whopRecoveryKey = document.getElementById("whop-recovery-license-key");
+const whopRecoveryButton = document.getElementById("whop-recovery-button");
+const whopRecoveryStatus = document.getElementById("whop-recovery-status");
+const whopRecoveryToggle = document.getElementById("whop-recovery-toggle");
 const pageParams = new URLSearchParams(window.location.search);
 const whopReturnMode = pageParams.get("whop") === "complete";
 
@@ -113,6 +62,24 @@ function setWhopStatus(lines) {
     whopStatus.appendChild(row);
     if (index < rows.length - 1) whopStatus.appendChild(document.createElement("br"));
   });
+}
+
+function setRecoveryStatus(text, isError = false) {
+  if (!whopRecoveryStatus) return;
+  whopRecoveryStatus.textContent = String(text || "");
+  whopRecoveryStatus.style.color = isError ? "#ffb4b4" : "var(--muted)";
+}
+
+function showRecoveryPanel(message = "") {
+  if (!whopRecovery) return;
+  whopRecovery.hidden = false;
+  if (message) setRecoveryStatus(message);
+}
+
+function hideRecoveryPanel() {
+  if (!whopRecovery) return;
+  whopRecovery.hidden = true;
+  setRecoveryStatus("");
 }
 
 function whopStorageAvailable() {
@@ -158,6 +125,10 @@ function isWhopCheckoutUrl(value) {
   }
 }
 
+function isLonerLicenseKey(value) {
+  return /^LC-ROK-[A-Z0-9-]{12,}$/i.test(String(value || "").trim());
+}
+
 async function createWhopCheckout() {
   const response = await fetch(WHOP_CREATE_CHECKOUT_URL, {
     method: "POST",
@@ -188,11 +159,11 @@ async function createWhopCheckout() {
   return { checkoutUrl, claimToken };
 }
 
-async function claimWhopLicense(claimToken) {
-  const response = await fetch(WHOP_CLAIM_LICENSE_URL, {
+async function postWhopJson(url, body, fallbackMessage) {
+  const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ claim_token: claimToken })
+    body: JSON.stringify(body)
   });
 
   let result = null;
@@ -204,12 +175,148 @@ async function claimWhopLicense(claimToken) {
 
   if (!response.ok) {
     throw new Error(
-      (result && (result.detail || result.reason)) ||
-        "The licensing server could not verify this Whop purchase."
+      (result && (result.detail || result.reason)) || fallbackMessage
     );
   }
 
   return result;
+}
+
+async function claimWhopLicense(claimToken) {
+  return postWhopJson(
+    WHOP_CLAIM_LICENSE_URL,
+    { claim_token: claimToken },
+    "The licensing server could not verify this Whop purchase."
+  );
+}
+
+async function recoverWhopLicense(licenseKey) {
+  return postWhopJson(
+    WHOP_RECOVER_LICENSE_URL,
+    { license_key: licenseKey },
+    "The licensing server could not recover this Whop purchase."
+  );
+}
+
+function openFreshDownload(url) {
+  const value = String(url || "").trim();
+  if (!value.startsWith("https://")) {
+    throw new Error("The licensing server did not return a valid private download URL.");
+  }
+
+  const a = document.createElement("a");
+  a.href = value;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+async function getFreshFulfillment(existingLicenseKey = "") {
+  const claimToken = getWhopClaimToken();
+  if (claimToken.length >= 32) {
+    return claimWhopLicense(claimToken);
+  }
+
+  const licenseKey = String(existingLicenseKey || "").trim();
+  if (isLonerLicenseKey(licenseKey)) {
+    return recoverWhopLicense(licenseKey);
+  }
+
+  throw new Error(
+    "Secure purchase access is no longer stored in this tab. Use Recover existing purchase below."
+  );
+}
+
+function showFulfillment(result) {
+  if (!fulfillmentResult) return;
+
+  fulfillmentResult.replaceChildren();
+  fulfillmentResult.classList.remove("visible");
+
+  if (!result || result.fulfilled !== true || !result.license_key) return;
+
+  const title = document.createElement("strong");
+  title.textContent = "Subscription verified — your license is ready.";
+  fulfillmentResult.appendChild(title);
+
+  const key = document.createElement("div");
+  key.className = "license-key";
+  key.textContent = result.license_key;
+  fulfillmentResult.appendChild(key);
+
+  const actions = document.createElement("div");
+  actions.className = "result-actions";
+
+  const copyButton = document.createElement("button");
+  copyButton.type = "button";
+  copyButton.className = "btn btn-secondary";
+  copyButton.textContent = "Copy License Key";
+  copyButton.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(result.license_key);
+      copyButton.textContent = "Copied";
+      setTimeout(() => {
+        copyButton.textContent = "Copy License Key";
+      }, 1800);
+    } catch (error) {
+      console.error("Clipboard error:", error);
+    }
+  });
+  actions.appendChild(copyButton);
+
+  const downloadButton = document.createElement("button");
+  downloadButton.type = "button";
+  downloadButton.className = "btn btn-primary";
+  downloadButton.textContent = "Download ROK Task Manager";
+  downloadButton.addEventListener("click", async () => {
+    downloadButton.disabled = true;
+    const originalText = downloadButton.textContent;
+    downloadButton.textContent = "Preparing secure download...";
+
+    try {
+      // Always ask Render for a fresh presigned URL at click time. This prevents
+      // the 15-minute R2 URL from expiring while the customer leaves the page open.
+      const fresh = await getFreshFulfillment(result.license_key);
+      if (!fresh || fresh.fulfilled !== true || !fresh.download_url) {
+        throw new Error(
+          (fresh && (fresh.download_error || fresh.reason)) ||
+            "Private download is temporarily unavailable."
+        );
+      }
+      openFreshDownload(fresh.download_url);
+    } catch (error) {
+      console.error("Whop download refresh error:", error);
+      setWhopStatus([
+        { text: "The private download link could not be refreshed.", strong: true },
+        {
+          text:
+            error && error.message
+              ? error.message
+              : "Please use Recover existing purchase below or contact Loner's Corner support."
+        }
+      ]);
+      showRecoveryPanel("Enter the LC-ROK license key shown above to recover a fresh download link.");
+    } finally {
+      downloadButton.disabled = false;
+      downloadButton.textContent = originalText;
+    }
+  });
+  actions.appendChild(downloadButton);
+
+  fulfillmentResult.appendChild(actions);
+
+  if (result.download_error) {
+    const note = document.createElement("p");
+    note.style.marginBottom = "0";
+    note.style.color = "var(--muted)";
+    note.textContent = result.download_error;
+    fulfillmentResult.appendChild(note);
+  }
+
+  fulfillmentResult.classList.add("visible");
+  hideRecoveryPanel();
 }
 
 function delay(ms) {
@@ -227,9 +334,10 @@ async function completeWhopPurchase() {
         strong: true
       },
       {
-        text: "If you completed payment, do not pay again. Contact Loner's Corner support for assistance."
+        text: "If you completed payment, do not pay again. Use Recover existing purchase below with your LC-ROK license key."
       }
     ]);
+    showRecoveryPanel("Your payment is not lost. Enter your LC-ROK license key to recover the license and a fresh private download link.");
     return;
   }
 
@@ -254,7 +362,8 @@ async function completeWhopPurchase() {
 
       if (result && result.fulfilled === true && result.license_key) {
         showFulfillment(result);
-        clearWhopClaimToken();
+        // IMPORTANT: keep the claim token in sessionStorage so a normal refresh
+        // can restore the same verified purchase and mint a fresh R2 URL.
         setWhopStatus([
           { text: "Whop payment verified successfully.", strong: true },
           { text: "Your license and private download access are ready below." }
@@ -265,11 +374,11 @@ async function completeWhopPurchase() {
       }
 
       if (result && result.pending === false) {
-        clearWhopClaimToken();
         setWhopStatus([
           { text: "Whop checkout could not be fulfilled.", strong: true },
           { text: result.reason || "Please contact Loner's Corner support before paying again." }
         ]);
+        showRecoveryPanel();
         return;
       }
 
@@ -293,6 +402,89 @@ async function completeWhopPurchase() {
   ]);
 }
 
+async function restoreWhopPurchaseFromSession() {
+  if (whopReturnMode) return;
+
+  const claimToken = getWhopClaimToken();
+  if (claimToken.length < 32) return;
+
+  setWhopStatus([
+    { text: "Restoring your verified Whop purchase...", strong: true },
+    { text: "Checking the saved secure checkout claim in this browser tab." }
+  ]);
+
+  try {
+    const result = await claimWhopLicense(claimToken);
+    if (result && result.fulfilled === true && result.license_key) {
+      showFulfillment(result);
+      setWhopStatus([
+        { text: "Verified purchase restored.", strong: true },
+        { text: "Your license and private download access are ready below." }
+      ]);
+      return;
+    }
+
+    if (result && result.pending === true) {
+      setWhopStatus([
+        { text: "Your Whop payment is still processing.", strong: true },
+        { text: result.reason || "Please refresh this page again shortly. Do not pay again." }
+      ]);
+      return;
+    }
+
+    setWhopStatus([
+      { text: "Saved purchase access could not be restored.", strong: true },
+      { text: (result && result.reason) || "Use Recover existing purchase below." }
+    ]);
+    showRecoveryPanel();
+  } catch (error) {
+    console.error("Whop session restore error:", error);
+    setWhopStatus([
+      { text: "Saved purchase access could not be restored right now.", strong: true },
+      { text: error && error.message ? error.message : "Please try again shortly." }
+    ]);
+    showRecoveryPanel();
+  }
+}
+
+async function handleWhopRecovery() {
+  const licenseKey = String(whopRecoveryKey?.value || "").trim().toUpperCase();
+  if (!isLonerLicenseKey(licenseKey)) {
+    setRecoveryStatus("Enter the LC-ROK license key issued by Loner's Corner.", true);
+    whopRecoveryKey?.focus();
+    return;
+  }
+
+  if (whopRecoveryButton) whopRecoveryButton.disabled = true;
+  setRecoveryStatus("Verifying the license and preparing a fresh private download link...");
+
+  try {
+    const result = await recoverWhopLicense(licenseKey);
+    if (!result || result.fulfilled !== true || !result.license_key) {
+      throw new Error(
+        (result && result.reason) || "This purchase could not be recovered."
+      );
+    }
+
+    showFulfillment(result);
+    setWhopStatus([
+      { text: "Existing Whop purchase recovered successfully.", strong: true },
+      { text: "Your license and private download access are ready below." }
+    ]);
+    setRecoveryStatus("");
+  } catch (error) {
+    console.error("Whop license recovery error:", error);
+    setRecoveryStatus(
+      error && error.message
+        ? error.message
+        : "The purchase could not be recovered. Please contact Loner's Corner support.",
+      true
+    );
+  } finally {
+    if (whopRecoveryButton) whopRecoveryButton.disabled = false;
+  }
+}
+
 if (whopPanel) {
   whopPanel.hidden = false;
 
@@ -306,6 +498,20 @@ if (whopPanel) {
       "After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.";
   }
 }
+
+whopRecoveryToggle?.addEventListener("click", () => {
+  if (!whopRecovery) return;
+  whopRecovery.hidden = !whopRecovery.hidden;
+  if (!whopRecovery.hidden) whopRecoveryKey?.focus();
+});
+
+whopRecoveryButton?.addEventListener("click", handleWhopRecovery);
+whopRecoveryKey?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    handleWhopRecovery();
+  }
+});
 
 if (whopButton) {
   whopButton.addEventListener("click", async () => {
@@ -326,6 +532,25 @@ if (whopButton) {
         { text: "Please enable site storage or use a normal browser window before checkout." }
       ]);
       return;
+    }
+
+    // If this tab already owns a verified claim, restore it instead of creating
+    // another checkout and risking a duplicate subscription/payment.
+    const existingClaim = getWhopClaimToken();
+    if (existingClaim.length >= 32) {
+      try {
+        const existing = await claimWhopLicense(existingClaim);
+        if (existing && existing.fulfilled === true && existing.license_key) {
+          showFulfillment(existing);
+          setWhopStatus([
+            { text: "You already have a verified purchase in this browser tab.", strong: true },
+            { text: "Your license and private download access are ready below." }
+          ]);
+          return;
+        }
+      } catch (error) {
+        console.warn("Existing Whop claim check failed before checkout:", error);
+      }
     }
 
     whopButton.disabled = true;
@@ -362,6 +587,11 @@ if (whopReturnMode) {
       { text: "Whop payment verification could not be completed.", strong: true },
       { text: "Please wait a minute and refresh this same browser tab. Do not submit another payment." }
     ]);
+    showRecoveryPanel();
+  });
+} else {
+  restoreWhopPurchaseFromSession().catch((error) => {
+    console.error("Whop restore startup error:", error);
   });
 }
 
