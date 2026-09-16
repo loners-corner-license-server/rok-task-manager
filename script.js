@@ -476,9 +476,6 @@ async function setupPrivatePayPalHostedButtonTest() {
     <p style="margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5;">
       One-time PayPal payment. This option does not auto-renew. After payment, you return here and your LC-ROK license and private download are provided after server verification.
     </p>
-    <p style="margin:0 0 12px;color:#ffcf80;font-size:13px;line-height:1.5;">
-      LIVE PAYMENT: clicking Pay in PayPal charges real money.
-    </p>
     <div id="paypal-hosted-button-wrap" hidden>
       <div id="paypal-container-${PAYPAL_HOSTED_BUTTON_ID}"></div>
     </div>
