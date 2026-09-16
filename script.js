@@ -615,7 +615,12 @@ async function setupPrivatePayPalHostedButtonTest() {
     }
   };
 
-  agreement?.addEventListener("change", update);
+  agreement?.addEventListener("change", () => {
+    update();
+    if (agreement.checked && whopStatus && /Please agree to the Subscription/i.test(whopStatus.textContent || "")) {
+      whopStatus.textContent = "";
+    }
+  });
   update();
   void renderPayPalButton();
 
@@ -973,13 +978,15 @@ if (whopPanel) {
   whopPanel.hidden = false;
 
   if (checkoutProviderCopy) {
-    checkoutProviderCopy.textContent =
-      "$50.00 USD every month. Secure checkout is processed through Whop.";
+    checkoutProviderCopy.textContent = PAYPAL_BUY_TEST_MODE
+      ? "One Windows PC license. Choose automatic monthly billing with Whop or a one-time 30-day payment with PayPal."
+      : "$50.00 USD every month. Secure checkout is processed through Whop.";
   }
 
   if (checkoutFulfillmentNote) {
-    checkoutFulfillmentNote.textContent =
-      "After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.";
+    checkoutFulfillmentNote.textContent = PAYPAL_BUY_TEST_MODE
+      ? "After payment is confirmed, the licensing server verifies the purchase and provides your license key and private download access."
+      : "After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.";
   }
 }
 
