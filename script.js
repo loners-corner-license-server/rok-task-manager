@@ -535,12 +535,46 @@ async function setupPrivatePayPalHostedButtonTest() {
     }
   };
 
+  const setPayPalCheckoutEnabled = (enabled) => {
+    // Keep the hosted checkout visible, but make the entire embedded PayPal
+    // surface non-interactive until the customer accepts the terms.
+    wrap.hidden = false;
+    wrap.style.pointerEvents = enabled ? "auto" : "none";
+    wrap.style.opacity = enabled ? "1" : "0.55";
+    wrap.setAttribute("aria-disabled", enabled ? "false" : "true");
+    if (enabled) {
+      wrap.removeAttribute("inert");
+    } else {
+      wrap.setAttribute("inert", "");
+    }
+  };
+
+  const update = () => {
+    const allowed = Boolean(agreement && agreement.checked);
+    setPayPalCheckoutEnabled(allowed);
+    status.style.color = "var(--muted)";
+
+    if (!paypalButtonRendered) {
+      status.textContent = allowed
+        ? "Loading secure PayPal checkout..."
+        : "PayPal checkout is loading. Agree to the terms above to enable payment.";
+      return;
+    }
+
+    if (!allowed) {
+      status.textContent = "PayPal checkout is ready. Agree to the terms above to enable payment.";
+      return;
+    }
+
+    setReadyStatus();
+  };
+
   const renderPayPalButton = async () => {
-    if (!agreement?.checked || paypalButtonRendered || paypalButtonRendering) return;
+    if (paypalButtonRendered || paypalButtonRendering) return;
 
     paypalButtonRendering = true;
     wrap.hidden = false;
-    status.textContent = "Loading secure PayPal checkout...";
+    update();
 
     try {
       paypalSdk = paypalSdk || await loadPayPalHostedButtonSdk();
@@ -548,14 +582,14 @@ async function setupPrivatePayPalHostedButtonTest() {
         throw new Error("PayPal Hosted Buttons are unavailable in this browser.");
       }
 
-      // The Hosted Button must be rendered only after its container is visible.
-      // Rendering it while hidden can leave an empty container permanently.
+      // Render immediately while the visible container is disabled. This lets
+      // PayPal load in the background while the customer reads/accepts terms.
       await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       await paypalSdk.HostedButtons({ hostedButtonId: PAYPAL_HOSTED_BUTTON_ID })
         .render(`#paypal-container-${PAYPAL_HOSTED_BUTTON_ID}`);
 
       paypalButtonRendered = true;
-      setReadyStatus();
+      update();
     } catch (error) {
       console.error("PayPal Hosted Button setup error:", error);
       wrap.hidden = false;
@@ -566,25 +600,9 @@ async function setupPrivatePayPalHostedButtonTest() {
     }
   };
 
-  const update = () => {
-    const allowed = Boolean(agreement && agreement.checked);
-    wrap.hidden = !allowed;
-    status.style.color = "var(--muted)";
-
-    if (!allowed) {
-      status.textContent = "Agree to the terms above to reveal the PayPal payment buttons.";
-      return;
-    }
-
-    if (paypalButtonRendered) {
-      setReadyStatus();
-      return;
-    }
-
-    void renderPayPalButton();
-  };
   agreement?.addEventListener("change", update);
   update();
+  void renderPayPalButton();
 
   renewToggle?.addEventListener("click", () => {
     renewBox.hidden = !renewBox.hidden;
