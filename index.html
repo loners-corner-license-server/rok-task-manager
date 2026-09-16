@@ -139,6 +139,27 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 .whop-recovery-row input:focus { outline: 2px solid rgba(46,214,255,.32); outline-offset: 1px; }
+
+.dual-checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.checkout-option-panel {
+  height: 100%;
+}
+.checkout-option-panel .btn {
+  width: 100%;
+}
+.checkout-option-panel .whop-recovery-toggle {
+  display: inline-block;
+}
+@media (max-width: 960px) {
+  .dual-checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 720px) {
   .requirements-copy h2 {
     font-size: clamp(40px, 12vw, 58px);
@@ -256,7 +277,7 @@
 </div>
 </div>
 </section>
-<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>ROK Task Manager Monthly</h2><p id="checkout-provider-copy">$50.00 USD every month. Secure checkout is processed through Whop.</p></div><div class="feature-card reveal" style="max-width:620px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Monthly License — $50 USD</h3><p style="margin-bottom:16px;">One Windows PC license. Subscription renews monthly until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Secure checkout with Whop</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">Complete checkout securely through Whop. After payment is verified, your license key and private download access will be provided here.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop — $50/month</button><button class="whop-recovery-toggle" id="whop-recovery-toggle" type="button">Already purchased? Recover license &amp; download</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div><div class="whop-recovery" id="whop-recovery" hidden><p><strong>Recover existing purchase</strong></p><p>Enter the <strong>LC-ROK-...</strong> license key issued by Loner's Corner. This does not create a new charge.</p><div class="whop-recovery-row"><input id="whop-recovery-license-key" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Loner's Corner license key"/><button class="btn btn-secondary" id="whop-recovery-button" type="button">Recover Access</button></div><div aria-live="polite" id="whop-recovery-status" style="margin-top:10px; color:var(--muted); font-size:13px; line-height:1.5;"></div></div></div><div aria-live="polite" class="fulfillment-result" id="fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.</p></div></div></section>
+<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>ROK Task Manager Monthly</h2><p id="checkout-provider-copy">$50.00 USD every month. Secure checkout is processed through Whop.</p></div><div class="feature-card reveal" style="max-width:1120px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Monthly License — $50 USD</h3><p style="margin-bottom:16px;">One Windows PC license. Subscription renews monthly until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Secure checkout with Whop</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">Complete checkout securely through Whop. After payment is verified, your license key and private download access will be provided here.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop — $50/month</button><button class="whop-recovery-toggle" id="whop-recovery-toggle" type="button">Already purchased? Recover license &amp; download</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div><div class="whop-recovery" id="whop-recovery" hidden><p><strong>Recover existing purchase</strong></p><p>Enter the <strong>LC-ROK-...</strong> license key issued by Loner's Corner. This does not create a new charge.</p><div class="whop-recovery-row"><input id="whop-recovery-license-key" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Loner's Corner license key"/><button class="btn btn-secondary" id="whop-recovery-button" type="button">Recover Access</button></div><div aria-live="polite" id="whop-recovery-status" style="margin-top:10px; color:var(--muted); font-size:13px; line-height:1.5;"></div></div></div><div aria-live="polite" class="fulfillment-result" id="fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After Whop confirms payment, the licensing server verifies the subscription and provides your license key and private download access.</p></div></div></section>
 <section class="section" id="faq">
 <div class="container faq-wrap">
 <div class="section-heading left reveal">

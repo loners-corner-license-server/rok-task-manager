@@ -465,7 +465,8 @@ async function setupPrivatePayPalHostedButtonTest() {
 
   const panel = document.createElement("div");
   panel.id = "paypal-hosted-test-panel";
-  panel.style.marginTop = "18px";
+  panel.className = "checkout-option-panel";
+  panel.style.marginTop = "0";
   panel.style.padding = "16px";
   panel.style.border = "1px solid var(--line)";
   panel.style.borderRadius = "14px";
@@ -507,7 +508,21 @@ async function setupPrivatePayPalHostedButtonTest() {
       </div>
       <p id="paypal-recover-status" style="margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5;"></p>
     </div>`;
-  whopPanel.insertAdjacentElement("afterend", panel);
+  const checkoutCard = whopPanel.closest(".feature-card");
+  let dualGrid = document.getElementById("dual-checkout-grid");
+  if (!dualGrid) {
+    dualGrid = document.createElement("div");
+    dualGrid.id = "dual-checkout-grid";
+    dualGrid.className = "dual-checkout-grid";
+    whopPanel.parentNode.insertBefore(dualGrid, whopPanel);
+    dualGrid.appendChild(whopPanel);
+    whopPanel.classList.add("checkout-option-panel");
+    whopPanel.style.marginBottom = "0";
+    if (checkoutCard) {
+      checkoutCard.style.maxWidth = "1120px";
+    }
+  }
+  dualGrid.appendChild(panel);
 
   const wrap = panel.querySelector("#paypal-hosted-button-wrap");
   const status = panel.querySelector("#paypal-hosted-test-status");
