@@ -2,7 +2,7 @@
 // Public browser code only. No payment-provider or server secrets are stored here.
 
 const LINKS = {
-  discord: "https://discord.gg/bmzc7x5ZA"
+  discord: "https://discord.gg/Em3Yn2Rv4"
 };
 
 document.querySelectorAll(".js-discord-link").forEach((a) => {
