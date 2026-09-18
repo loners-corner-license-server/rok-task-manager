@@ -160,6 +160,170 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Multi-account value section */
+.multi-account-section {
+  position: relative;
+  padding-top: 28px;
+  padding-bottom: 76px;
+}
+.multi-account-shell {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(46,214,255,.11), transparent 36%),
+    linear-gradient(145deg, rgba(11,30,56,.9), rgba(6,17,33,.88));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+.multi-account-shell::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  right: -130px;
+  bottom: -170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,151,255,.16), transparent 68%);
+  pointer-events: none;
+}
+.multi-account-intro {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+.multi-account-intro h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+}
+.multi-account-intro h2 span { color: var(--cyan); }
+.multi-account-intro .lead {
+  margin: 0;
+  max-width: 850px;
+  color: #b4c7d9;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.7;
+}
+.multi-account-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 20px;
+  padding: 9px 13px;
+  border: 1px solid rgba(46,214,255,.25);
+  border-radius: 999px;
+  background: rgba(46,214,255,.055);
+  color: #c8f6ff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.walkaway-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 30px;
+}
+.walkaway-step {
+  min-height: 176px;
+  padding: 20px;
+  border: 1px solid rgba(170,211,255,.14);
+  border-radius: 18px;
+  background: rgba(255,255,255,.025);
+}
+.walkaway-step .step-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: rgba(46,214,255,.08);
+  font-size: 21px;
+}
+.walkaway-step b {
+  display: block;
+  margin-bottom: 7px;
+  color: #eef8ff;
+  font-size: 16px;
+}
+.walkaway-step span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.lifestyle-strip {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+.lifestyle-card,
+.multi-account-card {
+  padding: 22px;
+  border: 1px solid rgba(170,211,255,.14);
+  border-radius: 18px;
+  background: rgba(2,10,22,.34);
+}
+.lifestyle-card h3,
+.multi-account-card h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+}
+.lifestyle-card p,
+.multi-account-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.lifestyle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 16px;
+}
+.lifestyle-actions span {
+  padding: 8px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(170,211,255,.13);
+  background: rgba(255,255,255,.025);
+  color: #bdd0e1;
+  font-size: 12px;
+  font-weight: 700;
+}
+.mantra {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(170,211,255,.13);
+  text-align: center;
+  color: #d7e7f5;
+  font-weight: 850;
+  letter-spacing: .045em;
+  font-size: clamp(14px, 1.8vw, 18px);
+}
+.mantra strong { color: var(--cyan); }
+@media (max-width: 900px) {
+  .walkaway-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lifestyle-strip { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .multi-account-shell { padding: 24px 18px; }
+  .walkaway-grid { grid-template-columns: 1fr; }
+  .walkaway-step { min-height: 0; }
+}
+
 @media (max-width: 720px) {
   .requirements-copy h2 {
     font-size: clamp(40px, 12vw, 58px);
@@ -188,7 +352,7 @@
 
 
 
-<a href="#features">Features</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a></nav>
+<a href="#multi-account">Why ROK TM</a><a href="#features">Features</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a></nav>
 </div>
 </header>
 <main>
@@ -216,7 +380,63 @@
 </div>
 </div>
 </div>
-</section><section class="section requirements-section" id="requirements"><div class="container requirements-wrap"><div class="requirements-copy reveal"><span class="kicker">PLEASE READ BEFORE USING THE DEMO OR PURCHASING</span><h2>SYSTEM REQUIREMENTS</h2><p class="requirements-lead">ROK Task Manager depends on a consistent Windows PC-client layout. Please confirm these settings before downloading the demo or subscribing.</p><div class="req-grid"><div class="req"><b>Windows PC only</b><span>Windows desktop environment</span></div><div class="req"><b>Official PC client only</b><span>No emulator support</span></div><div class="req"><b>1920 × 1080</b><span>1080p resolution</span></div><div class="req"><b>100% display scaling</b><span>Windows display scale</span></div><div class="req"><b>Ultra graphics</b><span>Original map style, fullscreen</span></div><div class="req"><b>Alphanumeric names</b><span>Recommended for OCR reliability</span></div></div></div><div class="requirements-image reveal delay-1"><img alt="ROK Task Manager system requirements and feature summary" src="assets/feature-summary.png"/></div></div></section>
+</section>
+<section class="section multi-account-section" id="multi-account">
+<div class="container">
+<div class="multi-account-shell reveal">
+  <div class="multi-account-intro">
+    <span class="kicker">BUILT FOR MULTI-ACCOUNT PLAYERS</span>
+    <h2>Managing 10, 20, 50 or even more accounts? <span>Give the repetition to the Task Manager.</span></h2>
+    <p class="lead">ROK Task Manager is designed for Rise of Kingdoms players who manage multiple accounts and are tired of repeating the same routine over and over again. Configure the tasks you want, press Start, and let the Task Manager work through your selected characters and accounts.</p>
+    <div class="multi-account-badge">🤖 Less clicking • Less repetition • Less babysitting</div>
+  </div>
+
+  <div class="walkaway-grid" aria-label="ROK Task Manager workflow">
+    <article class="walkaway-step">
+      <div class="step-icon">🎮</div>
+      <b>1. Open Rise of Kingdoms</b>
+      <span>Launch the supported Windows PC client with your normal game setup.</span>
+    </article>
+    <article class="walkaway-step">
+      <div class="step-icon">🤖</div>
+      <b>2. Launch ROK Task Manager</b>
+      <span>Open the Task Manager alongside the game and confirm your configured accounts.</span>
+    </article>
+    <article class="walkaway-step">
+      <div class="step-icon">✅</div>
+      <b>3. Select your tasks</b>
+      <span>Choose the routines you want completed across your selected characters and accounts.</span>
+    </article>
+    <article class="walkaway-step">
+      <div class="step-icon">▶️</div>
+      <b>4. Press START</b>
+      <span>Start the cycle and let the automation continue through the selected workflow.</span>
+    </article>
+  </div>
+
+  <div class="lifestyle-strip">
+    <div class="lifestyle-card">
+      <h3>Then be on your merry way.</h3>
+      <p>ROK Task Manager is designed to continue working through your selected tasks and configured accounts without requiring constant supervision.</p>
+      <div class="lifestyle-actions" aria-label="Things you can do while ROK Task Manager runs">
+        <span>🧹 Do your chores</span>
+        <span>🎬 Watch a movie</span>
+        <span>💻 Work</span>
+        <span>🛋️ Relax</span>
+        <span>😴 Or even go to sleep</span>
+      </div>
+    </div>
+    <div class="multi-account-card">
+      <h3>Made for large account lists</h3>
+      <p>Especially useful for players managing 10+ accounts, where manually switching characters, gathering resources, handling city routines, and managing marches can take hours.</p>
+    </div>
+  </div>
+
+  <div class="mantra">OPEN ROK <strong>→</strong> SELECT YOUR TASKS <strong>→</strong> PRESS START <strong>→</strong> WALK AWAY</div>
+</div>
+</div>
+</section>
+<section class="section requirements-section" id="requirements"><div class="container requirements-wrap"><div class="requirements-copy reveal"><span class="kicker">PLEASE READ BEFORE USING THE DEMO OR PURCHASING</span><h2>SYSTEM REQUIREMENTS</h2><p class="requirements-lead">ROK Task Manager depends on a consistent Windows PC-client layout. Please confirm these settings before downloading the demo or subscribing.</p><div class="req-grid"><div class="req"><b>Windows PC only</b><span>Windows desktop environment</span></div><div class="req"><b>Official PC client only</b><span>No emulator support</span></div><div class="req"><b>1920 × 1080</b><span>1080p resolution</span></div><div class="req"><b>100% display scaling</b><span>Windows display scale</span></div><div class="req"><b>Ultra graphics</b><span>Original map style, fullscreen</span></div><div class="req"><b>Alphanumeric names</b><span>Recommended for OCR reliability</span></div></div></div><div class="requirements-image reveal delay-1"><img alt="ROK Task Manager system requirements and feature summary" src="assets/feature-summary.png"/></div></div></section>
 <section class="stats-strip">
 <div class="container stats-grid reveal"><div><strong>7</strong><span>Core automation tasks</span></div><div><strong>Multi</strong><span>Character &amp; account workflow</span></div><div><strong>1080p</strong><span>Required resolution</span></div><div><strong>PC</strong><span>Official Windows client</span></div></div>
 </section>
