@@ -11,3 +11,9 @@ Production licensing server:
 `https://loners-corner-license-server.onrender.com`
 
 The public website uses Whop for checkout and license fulfillment. These website files do not modify the licensing server or desktop application.
+
+
+## v8.3
+- Reworked public marketing around concrete Task Manager capabilities.
+- Removed repeated game-title and automation wording from the public interface.
+- Retained a single explicit non-affiliation disclosure in the legal page.
