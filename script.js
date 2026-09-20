@@ -476,6 +476,10 @@ async function setupPublicPayPalHostedButton() {
     <p style="margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5;">
       One-time PayPal payment. This option does not auto-renew. After payment, you return here and your LC-ROK license and private download are provided after server verification.
     </p>
+    <div id="paypal-terms-reminder" role="status" aria-live="polite" style="margin:14px 0 16px;padding:14px 15px;border:1px solid rgba(255,193,92,.55);border-radius:12px;background:rgba(255,174,56,.10);color:#ffe0a3;font-size:14px;line-height:1.45;font-weight:800;letter-spacing:.01em;">
+      PLEASE AGREE TO THE TERMS &amp; POLICY ABOVE BEFORE PAYING.<br>
+      <span style="font-weight:600;color:#ffd28b;">The PayPal checkout is disabled until the agreement box is checked.</span>
+    </div>
     <div id="paypal-hosted-button-wrap" hidden>
       <div id="paypal-container-${PAYPAL_HOSTED_BUTTON_ID}"></div>
     </div>
@@ -521,6 +525,7 @@ async function setupPublicPayPalHostedButton() {
   }
   dualGrid.appendChild(panel);
 
+  const termsReminder = panel.querySelector("#paypal-terms-reminder");
   const wrap = panel.querySelector("#paypal-hosted-button-wrap");
   const status = panel.querySelector("#paypal-hosted-test-status");
   const renewToggle = panel.querySelector("#paypal-renew-toggle");
@@ -565,6 +570,20 @@ async function setupPublicPayPalHostedButton() {
     const allowed = Boolean(agreement && agreement.checked);
     setPayPalCheckoutEnabled(allowed);
     status.style.color = "var(--muted)";
+
+    if (termsReminder) {
+      if (allowed) {
+        termsReminder.innerHTML = '<strong>✓ TERMS ACCEPTED</strong><br><span style="font-weight:600;">PayPal checkout is enabled.</span>';
+        termsReminder.style.borderColor = "rgba(83,226,143,.45)";
+        termsReminder.style.background = "rgba(83,226,143,.08)";
+        termsReminder.style.color = "#b8f4d1";
+      } else {
+        termsReminder.innerHTML = '<strong>PLEASE AGREE TO THE TERMS &amp; POLICY ABOVE BEFORE PAYING.</strong><br><span style="font-weight:600;color:#ffd28b;">The PayPal checkout is disabled until the agreement box is checked.</span>';
+        termsReminder.style.borderColor = "rgba(255,193,92,.55)";
+        termsReminder.style.background = "rgba(255,174,56,.10)";
+        termsReminder.style.color = "#ffe0a3";
+      }
+    }
 
     if (!paypalButtonRendered) {
       status.textContent = allowed
