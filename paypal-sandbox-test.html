@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loner's Corner — PayPal Sandbox Subscription Test</title>
+  <style>
+    :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark}
+    *{box-sizing:border-box}body{margin:0;background:#0b0f14;color:#eef3f8;min-height:100vh;display:grid;place-items:center;padding:24px}
+    .card{width:min(720px,100%);background:#111821;border:1px solid #263241;border-radius:18px;padding:28px;box-shadow:0 18px 60px rgba(0,0,0,.35)}
+    .badge{display:inline-block;padding:7px 11px;border-radius:999px;background:#3f2a00;color:#ffd782;font-weight:800;font-size:12px;letter-spacing:.05em}
+    h1{font-size:28px;margin:16px 0 8px}p{color:#b8c3cf;line-height:1.55}.price{font-size:24px;font-weight:800;color:#fff;margin:18px 0}
+    .notice{border:1px solid #65501e;background:#211b0d;color:#ffe29a;border-radius:12px;padding:14px;margin:18px 0;font-weight:650}
+    .agree{display:flex;gap:10px;align-items:flex-start;margin:18px 0;padding:14px;border:1px solid #263241;border-radius:12px;background:#0d131a}.agree input{margin-top:4px}
+    #paypal-wrap{opacity:.45;pointer-events:none}.ready #paypal-wrap{opacity:1;pointer-events:auto}
+    #status{margin-top:14px;min-height:24px;color:#b8c3cf}.error{color:#ffb6b6!important}.success{color:#a9efc5!important}
+    .result{display:none;margin-top:20px;padding:18px;border:1px solid #2d5942;background:#0e1c16;border-radius:14px}.result.show{display:block}
+    .key{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#07100c;border:1px solid #284737;border-radius:10px;padding:12px;word-break:break-all;margin:10px 0}
+    .button{display:inline-block;border:0;border-radius:10px;padding:11px 15px;font-weight:750;text-decoration:none;background:#eef3f8;color:#0b0f14;cursor:pointer}
+    .small{font-size:12px;color:#8794a2;margin-top:18px}
+  </style>
+</head>
+<body>
+  <main class="card" id="card">
+    <span class="badge">PAYPAL SANDBOX ONLY</span>
+    <h1>ROK Task Manager — Subscription Test</h1>
+    <p>This page connects only to the isolated Loner's Corner sandbox licensing server. Use a PayPal <strong>Personal Sandbox</strong> buyer account. Do not use a real PayPal account.</p>
+    <div class="price">$50.00 USD / month — Sandbox</div>
+    <div class="notice">No real money should be charged when you sign in with the PayPal Sandbox buyer account.</div>
+
+    <label class="agree">
+      <input id="agree" type="checkbox" />
+      <span>I understand this is a sandbox subscription test and I am using a PayPal Sandbox buyer account.</span>
+    </label>
+
+    <div id="paypal-wrap">
+      <div id="paypal-button-container"></div>
+    </div>
+    <div id="status" role="status" aria-live="polite">Check the box above to enable the sandbox checkout.</div>
+
+    <section class="result" id="result">
+      <strong>Sandbox license issued</strong>
+      <div class="key" id="license-key"></div>
+      <p id="expires"></p>
+      <a id="download" class="button" href="#" target="_blank" rel="noopener" hidden>Open private download</a>
+    </section>
+
+    <p class="small">Sandbox Plan: P-9UB65524AY3163208NKXXF7Y<br>Sandbox API: loners-corner-license-sandbox.onrender.com</p>
+  </main>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAwRIUeWjJxZwV2_mLlZvBceesGevknAhTO0_0wZcqQNZWP-RI97y2noWVk2DsPPKw0tl7JWrs11UpREw&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+  <script>
+    const PLAN_ID = "P-9UB65524AY3163208NKXXF7Y";
+    const CLAIM_URL = "https://loners-corner-license-sandbox.onrender.com/paypal/claim-license";
+    const card = document.getElementById("card");
+    const agree = document.getElementById("agree");
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("result");
+    const keyEl = document.getElementById("license-key");
+    const expiresEl = document.getElementById("expires");
+    const downloadEl = document.getElementById("download");
+    let pending = null;
+
+    function token() {
+      const bytes = new Uint8Array(32);
+      crypto.getRandomValues(bytes);
+      let binary = "";
+      bytes.forEach(v => binary += String.fromCharCode(v));
+      return btoa(binary).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"");
+    }
+
+    function setStatus(message, kind="") {
+      statusEl.textContent = message;
+      statusEl.className = kind;
+    }
+
+    agree.addEventListener("change", () => {
+      card.classList.toggle("ready", agree.checked);
+      setStatus(agree.checked ? "Sandbox checkout enabled." : "Check the box above to enable the sandbox checkout.");
+    });
+
+    async function claim(subscriptionId, claimToken) {
+      const response = await fetch(CLAIM_URL, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({subscription_id: subscriptionId, claim_token: claimToken})
+      });
+      let data = {};
+      try { data = await response.json(); } catch (_) {}
+      if (!response.ok) throw new Error(data.detail || data.reason || `Server returned ${response.status}.`);
+      return data;
+    }
+
+    async function finalize(subscriptionId, claimToken) {
+      const waits = [0, 2000, 4000, 8000];
+      let lastError = null;
+      for (let i=0;i<waits.length;i++) {
+        if (waits[i]) await new Promise(r => setTimeout(r, waits[i]));
+        setStatus(i === 0 ? "Subscription approved. Verifying with the sandbox server..." : `Verification retry ${i+1} of ${waits.length}...`);
+        try {
+          const data = await claim(subscriptionId, claimToken);
+          if (!data.fulfilled || !data.license_key) throw new Error(data.reason || "License was not issued yet.");
+          keyEl.textContent = data.license_key;
+          expiresEl.textContent = data.expires_at ? `Access until: ${data.expires_at}` : "";
+          if (data.download_url) {
+            downloadEl.href = data.download_url;
+            downloadEl.hidden = false;
+          } else {
+            downloadEl.hidden = true;
+          }
+          resultEl.classList.add("show");
+          setStatus(data.existing ? "Sandbox subscription verified. Existing sandbox license recovered." : "Sandbox subscription verified. Sandbox license issued.", "success");
+          return;
+        } catch (err) {
+          lastError = err;
+        }
+      }
+      setStatus(`${lastError?.message || "Verification did not finish."} Do not create another subscription.`, "error");
+    }
+
+    if (!window.paypal || typeof window.paypal.Buttons !== "function") {
+      setStatus("PayPal Sandbox buttons failed to load.", "error");
+    } else {
+      paypal.Buttons({
+        style: {shape:"rect", color:"gold", layout:"vertical", label:"subscribe"},
+        createSubscription(data, actions) {
+          if (!agree.checked) throw new Error("Sandbox acknowledgement not checked.");
+          const claimToken = token();
+          pending = {claimToken};
+          setStatus("Opening PayPal Sandbox approval...");
+          return actions.subscription.create({plan_id: PLAN_ID, custom_id: claimToken});
+        },
+        async onApprove(data) {
+          const subscriptionId = String(data?.subscriptionID || "").trim();
+          if (!subscriptionId || !pending?.claimToken) {
+            setStatus("Could not link the approved subscription to this test session.", "error");
+            return;
+          }
+          await finalize(subscriptionId, pending.claimToken);
+        },
+        onCancel() { setStatus("Sandbox checkout cancelled. No license was issued."); },
+        onError(err) {
+          console.error(err);
+          setStatus("PayPal Sandbox checkout returned an error. No second subscription should be created until the first one is checked.", "error");
+        }
+      }).render("#paypal-button-container");
+    }
+  </script>
+</body>
+</html>
