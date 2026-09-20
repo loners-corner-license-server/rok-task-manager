@@ -44,15 +44,19 @@ const whopReturnMode = pageParams.get("whop") === "complete";
 
 
 // ----------------------------------------------------------
-// Public PayPal one-time Hosted Button checkout
+// Public PayPal one-time Orders v2 checkout
 // ----------------------------------------------------------
-// PayPal is publicly available alongside Whop.
-// PayPal auto-return uses ?paypal=complete after a successful payment.
+// The browser never chooses the amount. Render creates the fixed $50 USD order,
+// then captures and verifies the approved order before returning the LC-ROK key.
+// ?paypal=complete remains supported only for legacy Hosted Button recovery.
 const PAYPAL_PUBLIC_ENABLED = true;
 const PAYPAL_ONE_TIME_RETURN_MODE = pageParams.get("paypal") === "complete";
-const PAYPAL_HOSTED_CLIENT_ID =
+const PAYPAL_PUBLIC_CLIENT_ID =
   "BAA_AuZKrPiywBR6mlKzE8Plni5gHF_ivKqs1ZIiVE7alZ1xdGqytzR1br1eooOhZKxr5AgK59FZcVnrwM";
-const PAYPAL_HOSTED_BUTTON_ID = "U9JKAPLL78JQW";
+const PAYPAL_ONE_TIME_CREATE_ORDER_URL =
+  "https://loners-corner-license-server.onrender.com/paypal/one-time/create-order";
+const PAYPAL_ONE_TIME_CAPTURE_ORDER_URL =
+  "https://loners-corner-license-server.onrender.com/paypal/one-time/capture-order";
 const PAYPAL_ONE_TIME_CLAIM_URL =
   "https://loners-corner-license-server.onrender.com/paypal/one-time/claim";
 const PAYPAL_ONE_TIME_RECOVER_URL =
@@ -61,23 +65,24 @@ const PAYPAL_ONE_TIME_VALIDATE_RENEWAL_URL =
   "https://loners-corner-license-server.onrender.com/paypal/one-time/validate-renewal-license";
 const PAYPAL_RENEWAL_STORAGE_KEY = "lc_rok_paypal_pending_renewal_v1";
 const PAYPAL_RENEWAL_STORAGE_TTL_MS = 2 * 60 * 60 * 1000;
+const PAYPAL_APPROVED_ORDER_STORAGE_KEY = "lc_rok_paypal_approved_order_v1";
 
-function loadPayPalHostedButtonSdk() {
-  if (window.paypal && typeof window.paypal.HostedButtons === "function") {
+function loadPayPalButtonsSdk() {
+  if (window.paypal && typeof window.paypal.Buttons === "function") {
     return Promise.resolve(window.paypal);
   }
   return new Promise((resolve, reject) => {
-    const existing = document.getElementById("lc-paypal-hosted-sdk");
+    const existing = document.getElementById("lc-paypal-buttons-sdk");
     if (existing) {
       existing.addEventListener("load", () => resolve(window.paypal), { once: true });
       existing.addEventListener("error", () => reject(new Error("PayPal checkout could not be loaded.")), { once: true });
       return;
     }
     const script = document.createElement("script");
-    script.id = "lc-paypal-hosted-sdk";
+    script.id = "lc-paypal-buttons-sdk";
     script.src =
-      `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_HOSTED_CLIENT_ID)}` +
-      "&components=hosted-buttons&disable-funding=venmo&currency=USD";
+      `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_PUBLIC_CLIENT_ID)}` +
+      "&components=buttons&disable-funding=venmo&currency=USD&intent=capture";
     script.async = true;
     script.onload = () => resolve(window.paypal);
     script.onerror = () => reject(new Error("PayPal checkout could not be loaded."));
@@ -86,17 +91,57 @@ function loadPayPalHostedButtonSdk() {
 }
 
 async function postPayPalOneTimeJson(url, body, fallbackMessage) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+  } catch (networkError) {
+    const error = new Error("The licensing server is temporarily unreachable. Please do not submit another payment.");
+    error.networkError = true;
+    throw error;
+  }
   let result = null;
   try { result = await response.json(); } catch (error) {}
   if (!response.ok) {
-    throw new Error((result && (result.detail || result.reason)) || fallbackMessage);
+    const error = new Error((result && (result.detail || result.reason)) || fallbackMessage);
+    error.httpStatus = response.status;
+    throw error;
   }
   return result;
+}
+
+function createPayPalOneTimeOrder(renewLicenseKey = "") {
+  return postPayPalOneTimeJson(
+    PAYPAL_ONE_TIME_CREATE_ORDER_URL,
+    { renew_license_key: String(renewLicenseKey || "").trim().toUpperCase() },
+    "The licensing server could not create this PayPal order."
+  );
+}
+
+function capturePayPalOneTimeOrder(orderId) {
+  return postPayPalOneTimeJson(
+    PAYPAL_ONE_TIME_CAPTURE_ORDER_URL,
+    { order_id: String(orderId || "").trim() },
+    "The licensing server could not capture this PayPal order."
+  );
+}
+
+function setApprovedPayPalOrder(orderId) {
+  const value = String(orderId || "").trim();
+  if (!value) return;
+  try { sessionStorage.setItem(PAYPAL_APPROVED_ORDER_STORAGE_KEY, value); } catch (error) {}
+}
+
+function getApprovedPayPalOrder() {
+  try { return String(sessionStorage.getItem(PAYPAL_APPROVED_ORDER_STORAGE_KEY) || "").trim(); }
+  catch (error) { return ""; }
+}
+
+function clearApprovedPayPalOrder() {
+  try { sessionStorage.removeItem(PAYPAL_APPROVED_ORDER_STORAGE_KEY); } catch (error) {}
 }
 
 function claimPayPalOneTime(payload) {
@@ -460,11 +505,11 @@ function showFulfillment(result, options = {}) {
 }
 
 
-async function setupPublicPayPalHostedButton() {
+async function setupPublicPayPalOrdersCheckout() {
   if (!PAYPAL_PUBLIC_ENABLED || !whopPanel) return;
 
   const panel = document.createElement("div");
-  panel.id = "paypal-hosted-test-panel";
+  panel.id = "paypal-orders-panel";
   panel.className = "checkout-option-panel";
   panel.style.marginTop = "0";
   panel.style.padding = "16px";
@@ -474,23 +519,23 @@ async function setupPublicPayPalHostedButton() {
   panel.innerHTML = `
     <p style="margin:0 0 10px;"><strong>Pay with PayPal — $50 USD / 30 days</strong></p>
     <p style="margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5;">
-      One-time PayPal payment. This option does not auto-renew. After payment, you return here and your LC-ROK license and private download are provided after server verification.
+      One-time PayPal payment. This option does not auto-renew. After approval, the payment is verified and your LC-ROK license and private download are provided here automatically.
     </p>
     <div id="paypal-terms-reminder" role="status" aria-live="polite" style="margin:14px 0 16px;padding:14px 15px;border:1px solid rgba(255,193,92,.55);border-radius:12px;background:rgba(255,174,56,.10);color:#ffe0a3;font-size:14px;line-height:1.45;font-weight:800;letter-spacing:.01em;">
       PLEASE AGREE TO THE TERMS &amp; POLICY ABOVE BEFORE PAYING.<br>
       <span style="font-weight:600;color:#ffd28b;">The PayPal checkout is disabled until the agreement box is checked.</span>
     </div>
-    <div id="paypal-hosted-button-wrap" hidden>
-      <div id="paypal-container-${PAYPAL_HOSTED_BUTTON_ID}"></div>
+    <div id="paypal-buttons-wrap">
+      <div id="paypal-buttons-container"></div>
     </div>
-    <div id="paypal-hosted-test-status" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.5;"></div>
+    <div id="paypal-orders-status" aria-live="polite" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.5;"></div>
 
     <button type="button" id="paypal-renew-toggle" style="margin-top:12px;padding:0;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;">
       Renew an existing PayPal license
     </button>
     <div id="paypal-renew-box" hidden style="margin-top:10px;">
       <p style="margin:0 0 8px;color:var(--muted);font-size:13px;line-height:1.5;">
-        Enter your existing PayPal-issued LC-ROK key first. After it is validated, the next $50 PayPal payment will add 30 days to that same key.
+        Enter your existing PayPal-issued LC-ROK key first. After validation, the next $50 PayPal payment will add 30 days to that same key.
       </p>
       <div class="whop-recovery-row">
         <input id="paypal-renew-license" type="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Existing PayPal license key"/>
@@ -500,7 +545,7 @@ async function setupPublicPayPalHostedButton() {
     </div>
 
     <button type="button" id="paypal-recover-toggle" style="margin-top:12px;padding:0;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;">
-      Already paid through PayPal? Recover access
+      Already have an LC-ROK key? Recover access
     </button>
     <div id="paypal-recover-box" hidden style="margin-top:10px;">
       <div class="whop-recovery-row">
@@ -508,7 +553,25 @@ async function setupPublicPayPalHostedButton() {
         <button class="btn btn-secondary" id="paypal-recover-button" type="button">Recover Access</button>
       </div>
       <p id="paypal-recover-status" style="margin:8px 0 0;color:var(--muted);font-size:13px;line-height:1.5;"></p>
+    </div>
+
+    <button type="button" id="paypal-manual-toggle" style="margin-top:10px;padding:0;border:0;background:none;color:var(--muted);font:inherit;font-size:12px;font-weight:700;text-decoration:underline;cursor:pointer;">
+      Payment completed but license did not appear?
+    </button>
+    <div id="paypal-manual-box" hidden style="margin-top:10px;">
+      <p style="margin:0 0 8px;color:var(--muted);font-size:12px;line-height:1.5;">
+        Emergency fallback only. Enter the PayPal Transaction ID from your receipt or Activity. For a renewal, also enter the existing LC-ROK key.
+      </p>
+      <div class="whop-recovery-row">
+        <input id="paypal-manual-transaction" type="text" autocomplete="off" spellcheck="false" placeholder="PayPal Transaction ID" aria-label="PayPal Transaction ID"/>
+      </div>
+      <div class="whop-recovery-row" style="margin-top:8px;">
+        <input id="paypal-manual-renew-key" type="text" autocomplete="off" spellcheck="false" placeholder="Existing LC-ROK key (renewals only)" aria-label="Existing renewal license key"/>
+        <button class="btn btn-secondary" id="paypal-manual-verify" type="button">Verify Payment</button>
+      </div>
+      <p id="paypal-manual-status" style="margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.5;"></p>
     </div>`;
+
   const checkoutCard = whopPanel.closest(".feature-card");
   let dualGrid = document.getElementById("dual-checkout-grid");
   if (!dualGrid) {
@@ -519,15 +582,13 @@ async function setupPublicPayPalHostedButton() {
     dualGrid.appendChild(whopPanel);
     whopPanel.classList.add("checkout-option-panel");
     whopPanel.style.marginBottom = "0";
-    if (checkoutCard) {
-      checkoutCard.style.maxWidth = "1120px";
-    }
+    if (checkoutCard) checkoutCard.style.maxWidth = "1120px";
   }
   dualGrid.appendChild(panel);
 
   const termsReminder = panel.querySelector("#paypal-terms-reminder");
-  const wrap = panel.querySelector("#paypal-hosted-button-wrap");
-  const status = panel.querySelector("#paypal-hosted-test-status");
+  const wrap = panel.querySelector("#paypal-buttons-wrap");
+  const status = panel.querySelector("#paypal-orders-status");
   const renewToggle = panel.querySelector("#paypal-renew-toggle");
   const renewBox = panel.querySelector("#paypal-renew-box");
   const renewInput = panel.querySelector("#paypal-renew-license");
@@ -538,38 +599,30 @@ async function setupPublicPayPalHostedButton() {
   const recoverInput = panel.querySelector("#paypal-recover-license");
   const recoverButton = panel.querySelector("#paypal-recover-button");
   const recoverStatus = panel.querySelector("#paypal-recover-status");
+  const manualToggle = panel.querySelector("#paypal-manual-toggle");
+  const manualBox = panel.querySelector("#paypal-manual-box");
+  const manualTx = panel.querySelector("#paypal-manual-transaction");
+  const manualRenewKey = panel.querySelector("#paypal-manual-renew-key");
+  const manualVerify = panel.querySelector("#paypal-manual-verify");
+  const manualStatus = panel.querySelector("#paypal-manual-status");
 
   let paypalButtonRendered = false;
-  let paypalButtonRendering = false;
-  let paypalSdk = null;
 
   const setReadyStatus = () => {
     const pending = getPendingPayPalRenewal();
-    if (pending) {
-      status.textContent = `Renewal selected for ${maskLicenseKey(pending)}. This $50 payment will extend that same key by 30 days.`;
-    } else {
-      status.textContent = "PayPal button ready. A new $50 payment creates a 30-day LC-ROK license.";
-    }
-  };
-
-  const setPayPalCheckoutEnabled = (enabled) => {
-    // Keep the hosted checkout visible, but make the entire embedded PayPal
-    // surface non-interactive until the customer accepts the terms.
-    wrap.hidden = false;
-    wrap.style.pointerEvents = enabled ? "auto" : "none";
-    wrap.style.opacity = enabled ? "1" : "0.55";
-    wrap.setAttribute("aria-disabled", enabled ? "false" : "true");
-    if (enabled) {
-      wrap.removeAttribute("inert");
-    } else {
-      wrap.setAttribute("inert", "");
-    }
+    status.style.color = "var(--muted)";
+    status.textContent = pending
+      ? `Renewal selected for ${maskLicenseKey(pending)}. The next $50 payment will extend that same key by 30 days.`
+      : "PayPal checkout is ready. A new $50 payment creates a 30-day LC-ROK license.";
   };
 
   const update = () => {
     const allowed = Boolean(agreement && agreement.checked);
-    setPayPalCheckoutEnabled(allowed);
-    status.style.color = "var(--muted)";
+    wrap.style.pointerEvents = allowed ? "auto" : "none";
+    wrap.style.opacity = allowed ? "1" : "0.55";
+    wrap.setAttribute("aria-disabled", allowed ? "false" : "true");
+    if (allowed) wrap.removeAttribute("inert");
+    else wrap.setAttribute("inert", "");
 
     if (termsReminder) {
       if (allowed) {
@@ -586,50 +639,99 @@ async function setupPublicPayPalHostedButton() {
     }
 
     if (!paypalButtonRendered) {
-      status.textContent = allowed
-        ? "Loading secure PayPal checkout..."
-        : "PayPal checkout is loading. Agree to the terms above to enable payment.";
+      status.textContent = "Loading secure PayPal checkout...";
       return;
     }
-
     if (!allowed) {
       status.textContent = "PayPal checkout is ready. Agree to the terms above to enable payment.";
       return;
     }
-
     setReadyStatus();
   };
 
-  const renderPayPalButton = async () => {
-    if (paypalButtonRendered || paypalButtonRendering) return;
-
-    paypalButtonRendering = true;
-    wrap.hidden = false;
-    update();
-
-    try {
-      paypalSdk = paypalSdk || await loadPayPalHostedButtonSdk();
-      if (!paypalSdk || typeof paypalSdk.HostedButtons !== "function") {
-        throw new Error("PayPal Hosted Buttons are unavailable in this browser.");
+  const finalizeApprovedOrder = async (orderId) => {
+    const retryDelays = [0, 2000, 4000];
+    let lastError = null;
+    for (let index = 0; index < retryDelays.length; index += 1) {
+      if (retryDelays[index]) await delay(retryDelays[index]);
+      status.style.color = "var(--muted)";
+      status.textContent = index === 0
+        ? "Payment approved. Verifying your purchase and preparing your license..."
+        : `Licensing server retry ${index + 1} of ${retryDelays.length}... Do not pay again.`;
+      try {
+        const result = await capturePayPalOneTimeOrder(orderId);
+        if (!result || result.fulfilled !== true || !result.license_key) {
+          throw new Error((result && result.reason) || "PayPal payment could not be fulfilled.");
+        }
+        clearApprovedPayPalOrder();
+        clearPendingPayPalRenewal();
+        status.textContent = result.renewed
+          ? "Payment verified. Your existing license has been extended by 30 days."
+          : "Payment verified. Your 30-day license is ready.";
+        showPayPalOneTimeFulfillment(result);
+        return true;
+      } catch (error) {
+        lastError = error;
+        const retryable = Boolean(error && (error.networkError || error.httpStatus === 429 || error.httpStatus >= 500));
+        if (!retryable) break;
       }
-
-      // Render immediately while the visible container is disabled. This lets
-      // PayPal load in the background while the customer reads/accepts terms.
-      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      await paypalSdk.HostedButtons({ hostedButtonId: PAYPAL_HOSTED_BUTTON_ID })
-        .render(`#paypal-container-${PAYPAL_HOSTED_BUTTON_ID}`);
-
-      paypalButtonRendered = true;
-      update();
-    } catch (error) {
-      console.error("PayPal Hosted Button setup error:", error);
-      wrap.hidden = false;
-      status.textContent = error && error.message ? error.message : "PayPal checkout could not be loaded.";
-      status.style.color = "#ffb4b4";
-    } finally {
-      paypalButtonRendering = false;
     }
+    status.style.color = "#ffb4b4";
+    status.textContent = `${lastError && lastError.message ? lastError.message : "Payment verification could not be completed."} If PayPal shows a completed charge, do not pay again. Refresh this page to retry or use the fallback below.`;
+    manualBox.hidden = false;
+    return false;
   };
+
+  try {
+    const paypalSdk = await loadPayPalButtonsSdk();
+    if (!paypalSdk || typeof paypalSdk.Buttons !== "function") {
+      throw new Error("PayPal Buttons are unavailable in this browser.");
+    }
+
+    await paypalSdk.Buttons({
+      style: { layout: "vertical", shape: "rect", label: "paypal" },
+      createOrder: async () => {
+        if (!agreement || !agreement.checked) {
+          status.style.color = "#ffb4b4";
+          status.textContent = "Please agree to the Terms & Policy before paying.";
+          throw new Error("Terms not accepted.");
+        }
+        status.style.color = "var(--muted)";
+        status.textContent = "Creating your secure $50 PayPal order...";
+        const renewalKey = getPendingPayPalRenewal();
+        const result = await createPayPalOneTimeOrder(renewalKey);
+        if (!result || result.created !== true || !result.order_id) {
+          throw new Error((result && result.reason) || "PayPal order could not be created.");
+        }
+        status.textContent = "PayPal order created. Complete approval in the PayPal window.";
+        return result.order_id;
+      },
+      onApprove: async (data) => {
+        const orderId = String(data && data.orderID || "").trim();
+        if (!orderId) throw new Error("PayPal did not return the approved order ID.");
+        setApprovedPayPalOrder(orderId);
+        await finalizeApprovedOrder(orderId);
+      },
+      onCancel: () => {
+        status.style.color = "var(--muted)";
+        status.textContent = "PayPal checkout was cancelled. No new license was issued.";
+      },
+      onError: (error) => {
+        console.error("PayPal Orders checkout error:", error);
+        status.style.color = "#ffb4b4";
+        status.textContent = getApprovedPayPalOrder()
+          ? "PayPal approval was received, but license verification did not finish. Do not pay again. Refresh this page to retry."
+          : "PayPal checkout could not be completed. If PayPal shows a completed charge, do not pay again; use the recovery option below.";
+      }
+    }).render("#paypal-buttons-container");
+
+    paypalButtonRendered = true;
+    update();
+  } catch (error) {
+    console.error("PayPal Buttons startup error:", error);
+    status.style.color = "#ffb4b4";
+    status.textContent = error && error.message ? error.message : "PayPal checkout could not be loaded.";
+  }
 
   agreement?.addEventListener("change", () => {
     update();
@@ -638,7 +740,6 @@ async function setupPublicPayPalHostedButton() {
     }
   });
   update();
-  void renderPayPalButton();
 
   renewToggle?.addEventListener("click", () => {
     renewBox.hidden = !renewBox.hidden;
@@ -708,6 +809,48 @@ async function setupPublicPayPalHostedButton() {
     }
   });
 
+  manualToggle?.addEventListener("click", () => {
+    manualBox.hidden = !manualBox.hidden;
+    if (!manualBox.hidden) manualTx?.focus();
+  });
+
+  manualVerify?.addEventListener("click", async () => {
+    const tx = String(manualTx?.value || "").trim();
+    const renewKey = String(manualRenewKey?.value || "").trim().toUpperCase();
+    if (!tx) {
+      manualStatus.textContent = "Enter the PayPal Transaction ID first.";
+      manualStatus.style.color = "#ffb4b4";
+      return;
+    }
+    if (renewKey && !isLonerLicenseKey(renewKey)) {
+      manualStatus.textContent = "The renewal LC-ROK key is not valid.";
+      manualStatus.style.color = "#ffb4b4";
+      return;
+    }
+    manualVerify.disabled = true;
+    manualStatus.textContent = "Verifying the completed PayPal transaction...";
+    manualStatus.style.color = "var(--muted)";
+    try {
+      const result = await claimPayPalOneTime({ order_id: "", transaction_id: tx, renew_license_key: renewKey });
+      if (!result || result.fulfilled !== true || !result.license_key) {
+        throw new Error((result && result.reason) || "PayPal payment could not be verified.");
+      }
+      manualStatus.textContent = "Payment verified. Your license and download are ready.";
+      clearPendingPayPalRenewal();
+      showPayPalOneTimeFulfillment(result);
+    } catch (error) {
+      manualStatus.textContent = error && error.message ? error.message : "PayPal verification failed.";
+      manualStatus.style.color = "#ffb4b4";
+    } finally {
+      manualVerify.disabled = false;
+    }
+  });
+
+  const approvedOrder = getApprovedPayPalOrder();
+  if (approvedOrder) {
+    status.textContent = "An approved PayPal order is waiting for verification. Retrying now — do not pay again.";
+    void finalizeApprovedOrder(approvedOrder);
+  }
 }
 
 function showPayPalOneTimeFulfillment(result) {
@@ -819,8 +962,8 @@ function setupPayPalOneTimeReturnRecovery() {
   }
 }
 
-setupPublicPayPalHostedButton().catch((error) => {
-  console.error("PayPal Hosted Button startup error:", error);
+setupPublicPayPalOrdersCheckout().catch((error) => {
+  console.error("PayPal Orders checkout startup error:", error);
 });
 setupPayPalOneTimeReturnRecovery();
 

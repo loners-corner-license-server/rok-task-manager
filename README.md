@@ -2,18 +2,22 @@
 
 ## Production checkout
 
-The public website uses Whop for the $50/month ROK Task Manager subscription.
+The public website offers two payment choices:
 
-The browser calls the production Loner's Corner licensing server to create a Whop checkout. A one-time claim token is kept in `sessionStorage` in the same browser tab and is not placed in the URL. When Whop redirects the customer back with `?whop=complete`, the site verifies fulfillment with the production licensing server and displays the issued license key and private download access.
+- Whop: automatic monthly subscription.
+- PayPal: $50 USD one-time payment for 30 days using server-created PayPal Orders v2 checkout.
+
+Whop uses the existing production create-checkout / claim-license flow. PayPal creates the fixed-price order on the production Loner's Corner licensing server, then captures and verifies the approved order server-side before displaying the LC-ROK license key and private download access.
 
 Production licensing server:
 
 `https://loners-corner-license-server.onrender.com`
 
-The public website uses Whop for checkout and license fulfillment. These website files do not modify the licensing server or desktop application.
+The PayPal Transaction ID verifier and LC-ROK recovery remain available only as fallback recovery paths. No payment-provider secrets are stored in these website files.
 
-
-## v8.3
-- Reworked public marketing around concrete Task Manager capabilities.
-- Removed repeated game-title and automation wording from the public interface.
-- Retained a single explicit non-affiliation disclosure in the legal page.
+## v8.5
+- Replaced PayPal Hosted Button fulfillment with automatic Orders v2 create/capture checkout.
+- Added capture retry and same-tab recovery for an approved order when the licensing server is temporarily unreachable.
+- Added a small manual Transaction ID fallback for completed legacy/problem payments.
+- Preserved same-key PayPal renewal and existing Whop checkout.
+- Preserved the simplified task-focused v8.4 public page.
