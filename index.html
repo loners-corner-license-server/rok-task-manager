@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<meta content="ROK Task Manager — Windows task management for multi-account routines, map gathering, city tasks, marches, switching and more." name="description"/>
+<meta content="ROK Task Manager — Windows task management for multi-account routines, map gathering, city tasks, marches, and daily tasks." name="description"/>
 <title>ROK Task Manager | Loner's Corner</title>
 <link as="image" href="assets/feature-summary.png" rel="preload"/>
 <link href="assets/loners-corner-logo.png" rel="icon"/>
@@ -401,6 +401,20 @@
 @media (max-width: 520px) {
   .capability-card { grid-template-columns: 1fr; }
 }
+
+.compact-multi-account {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+}
+.compact-multi-account .multi-account-intro { max-width: 760px; }
+.compact-multi-account .multi-account-intro h2 { margin-bottom: 12px; }
+.compact-multi-account .mantra { margin: 0; white-space: nowrap; }
+@media (max-width: 900px) {
+  .compact-multi-account { grid-template-columns: 1fr; }
+  .compact-multi-account .mantra { white-space: normal; }
+}
 </style></head>
 <body>
 <div class="ambient ambient-a"></div>
@@ -434,7 +448,7 @@
 <div class="eyebrow"><span class="status-dot"></span> Windows PC task manager</div>
 <h1>More time.<br/><span>Less repetition.</span></h1>
 <p class="hero-sub">ROK Task Manager handles repetitive PC-client routines across your characters and accounts, so you can spend less time repeating the same clicks every day.</p>
-<p class="hero-sub"><strong>Primary focus:</strong> Resource gathering, Alliance Credit building, routine city tasks, marches, and account switching.</p><a class="requirements-warning-link" href="#requirements">⚠ SYSTEM REQUIREMENTS — READ BEFORE DOWNLOAD OR PURCHASE</a>
+<p class="hero-sub"><strong>Primary focus:</strong> Resource gathering, Alliance Credit building, city routines, marches, and daily tasks.</p><a class="requirements-warning-link" href="#requirements">⚠ SYSTEM REQUIREMENTS — READ BEFORE DOWNLOAD OR PURCHASE</a>
 <div class="hero-actions">
 <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
 <a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try It Now — Free Demo</a>
@@ -457,8 +471,8 @@
 <div class="container">
   <div class="section-heading reveal capability-heading">
     <span class="kicker">TASK COVERAGE</span>
-    <h2>Choose the routines you want handled.</h2>
-    <p>Turn tasks on or off based on the account cycle you want to run. ROK Task Manager keeps the controls simple while covering the repetitive work that adds up across large account lists.</p>
+    <h2>Choose your tasks.</h2>
+    <p>Pick the routines you want for each run.</p>
   </div>
 
   <div class="capability-grid">
@@ -467,7 +481,7 @@
       <div>
         <span class="capability-num">01</span>
         <h3>City Maintenance</h3>
-        <p>Handle the regular city and alliance checks that are easy to forget when managing many characters.</p>
+        <p>City and alliance routines handled in one cycle.</p>
         <div class="task-pills"><span>Territory rewards</span><span>Tech donations</span><span>City resources</span><span>Alliance Help</span></div>
       </div>
     </article>
@@ -477,7 +491,7 @@
       <div>
         <span class="capability-num">02</span>
         <h3>Map Gathering</h3>
-        <p>Search and send marches to supported resource nodes using your selected resource mode and kingdom type.</p>
+        <p>Search supported resource nodes and send gathering marches.</p>
         <div class="task-pills"><span>Food</span><span>Wood</span><span>Stone</span><span>Gold</span><span>Home Kingdom</span><span>Lost Kingdom</span></div>
       </div>
     </article>
@@ -487,7 +501,7 @@
       <div>
         <span class="capability-num">03</span>
         <h3>March Tasks</h3>
-        <p>Send the configured troop presets for supported march routines without repeating the same navigation on every character.</p>
+        <p>Run supported troop and alliance-pit march routines.</p>
         <div class="task-pills"><span>1 Troop March</span><span>Gather Alliance Pit</span></div>
       </div>
     </article>
@@ -497,93 +511,25 @@
       <div>
         <span class="capability-num">04</span>
         <h3>Daily Tasks</h3>
-        <p>Work through selected daily rewards and routine collection tasks from the city-management cycle.</p>
+        <p>Collect selected daily rewards and routine items.</p>
         <div class="task-pills"><span>VIP rewards</span><span>Daily quests</span><span>Mail rewards</span><span>Chests</span><span>Campaign / Expedition</span></div>
       </div>
     </article>
 
-    <article class="capability-card reveal delay-1">
-      <div class="capability-icon">👥</div>
-      <div>
-        <span class="capability-num">05</span>
-        <h3>Character Switching</h3>
-        <p>Move through starred characters so the selected task cycle can continue across your account list.</p>
-        <div class="task-pills"><span>Starred characters</span><span>Multi-character cycle</span></div>
-      </div>
-    </article>
-
-    <article class="capability-card reveal delay-2">
-      <div class="capability-icon">🔄</div>
-      <div>
-        <span class="capability-num">06</span>
-        <h3>Account Switching</h3>
-        <p>Switch through saved Google logins when one character list is finished, then continue the configured workflow.</p>
-        <div class="task-pills"><span>Saved logins</span><span>Cross-account workflow</span></div>
-      </div>
-    </article>
   </div>
 
-  <div class="capability-summary reveal">
-    <div><strong>SELECT TASKS</strong><span>Choose only the routines you want for the current run.</span></div>
-    <div class="summary-arrow">→</div>
-    <div><strong>PRESS START</strong><span>Begin the configured cycle from one compact control panel.</span></div>
-    <div class="summary-arrow">→</div>
-    <div><strong>WORK THROUGH ACCOUNTS</strong><span>Let the Task Manager continue through the selected character and account flow.</span></div>
-  </div>
 </div>
 </section>
 <section class="section multi-account-section" id="multi-account">
 <div class="container">
-<div class="multi-account-shell reveal">
+<div class="multi-account-shell reveal compact-multi-account">
   <div class="multi-account-intro">
     <span class="kicker">BUILT FOR MULTI-ACCOUNT PLAYERS</span>
-    <h2>Managing 10, 20, or even more accounts? <span>Give the repetition to the Task Manager.</span></h2>
-    <p class="lead">ROK Task Manager is designed for players who manage multiple accounts and are tired of repeating the same routine over and over again. Configure the tasks you want, press Start, and let the Task Manager work through your selected characters and accounts.</p>
-    <div class="multi-account-badge">🤖 Less clicking • Less repetition • Less babysitting</div>
+    <h2>Managing 10, 20, or more accounts?</h2>
+    <p class="lead">Select your tasks, press Start, and let ROK Task Manager work through your configured character and account list.</p>
+    <div class="multi-account-badge">Less clicking • Less repetition • Less babysitting</div>
   </div>
-
-  <div class="walkaway-grid" aria-label="ROK Task Manager workflow">
-    <article class="walkaway-step">
-      <div class="step-icon">🎮</div>
-      <b>1. Open the game client</b>
-      <span>Launch the supported Windows PC client with your normal setup.</span>
-    </article>
-    <article class="walkaway-step">
-      <div class="step-icon">🤖</div>
-      <b>2. Launch ROK Task Manager</b>
-      <span>Open the Task Manager alongside the game and confirm your configured accounts.</span>
-    </article>
-    <article class="walkaway-step">
-      <div class="step-icon">✅</div>
-      <b>3. Select your tasks</b>
-      <span>Choose the routines you want completed across your selected characters and accounts.</span>
-    </article>
-    <article class="walkaway-step">
-      <div class="step-icon">▶️</div>
-      <b>4. Press START</b>
-      <span>Start the cycle and let the Task Manager continue through the selected workflow.</span>
-    </article>
-  </div>
-
-  <div class="lifestyle-strip">
-    <div class="lifestyle-card">
-      <h3>Then be on your merry way.</h3>
-      <p>ROK Task Manager is designed to continue working through your selected tasks and configured accounts without requiring constant supervision.</p>
-      <div class="lifestyle-actions" aria-label="Things you can do while ROK Task Manager runs">
-        <span>🧹 Do your chores</span>
-        <span>🎬 Watch a movie</span>
-        <span>💻 Work</span>
-        <span>🛋️ Relax</span>
-        <span>😴 Or even go to sleep</span>
-      </div>
-    </div>
-    <div class="multi-account-card">
-      <h3>Made for large account lists</h3>
-      <p>Especially useful for players managing 10+ accounts, where manually switching characters, gathering resources, handling city routines, and managing marches can take hours.</p>
-    </div>
-  </div>
-
-  <div class="mantra">OPEN THE GAME <strong>→</strong> SELECT YOUR TASKS <strong>→</strong> PRESS START <strong>→</strong> WALK AWAY</div>
+  <div class="mantra">SELECT TASKS <strong>→</strong> PRESS START <strong>→</strong> WALK AWAY</div>
 </div>
 </div>
 </section>
@@ -665,12 +611,8 @@
 <p>Use 1920×1080 resolution, 100% display scaling, fullscreen, Ultra graphics, and the original map style.</p>
 </details>
 <details>
-<summary>Can it switch characters automatically?</summary>
-<p>Yes. It auto switches to starred characters.</p>
-</details>
-<details>
-<summary>Can it switch Google accounts?</summary>
-<p>Yes. It auto switches to saved logins.</p>
+<summary>Can it work through multiple characters and accounts?</summary>
+<p>Yes. It can move through starred characters and saved account logins as part of the configured workflow.</p>
 </details>
 
 <details>
@@ -688,8 +630,8 @@
 <div class="container cta-card reveal">
 <div>
 <span class="kicker">READY TO START?</span>
-<h2>Put the repetitive work on autopilot.</h2>
-<p>Review the requirements, choose your plan, and subscribe securely with Whop.</p>
+<h2>Spend less time on repetitive tasks.</h2>
+<p>Review the requirements, choose your payment option, and get started.</p>
 </div>
 <div class="cta-actions">
 <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
