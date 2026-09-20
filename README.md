@@ -21,3 +21,11 @@ The PayPal Transaction ID verifier and LC-ROK recovery remain available only as 
 - Added a small manual Transaction ID fallback for completed legacy/problem payments.
 - Preserved same-key PayPal renewal and existing Whop checkout.
 - Preserved the simplified task-focused v8.4 public page.
+
+## v8.7 temporary PayPal availability notice
+
+- New PayPal subscription checkout is temporarily disabled.
+- The public PayPal panel displays “Temporarily Unavailable” and directs new customers to Whop.
+- Whop checkout and Whop recovery are unchanged.
+- Legacy one-time PayPal purchase recovery remains available for existing customers.
+- No production licensing-server or paid EXE changes are included in this website-only package.
