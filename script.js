@@ -51,7 +51,6 @@ const whopReturnMode = pageParams.get("whop") === "complete";
 // the subscription before returning the LC-ROK key and private download link.
 // Legacy one-time PayPal recovery endpoints remain below for earlier purchases.
 const PAYPAL_PUBLIC_ENABLED = true;
-const PAYPAL_CHECKOUT_TEMPORARILY_DISABLED = true;
 const PAYPAL_ONE_TIME_RETURN_MODE = pageParams.get("paypal") === "complete";
 const PAYPAL_PUBLIC_CLIENT_ID =
   "BAApg80nWWoxeZcMdnWlYgOHYgx8raX6HckSaidIQUo5kpar9TrUSpQHocpqsJ4iXYTPiiEWrhoqRkC5L8";
@@ -518,17 +517,16 @@ async function setupPublicPayPalSubscriptionCheckout() {
   panel.innerHTML = `
     <p style="margin:0 0 10px;"><strong>PayPal — $50 USD / month</strong></p>
     <p style="margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5;">
-      PayPal monthly checkout is temporarily unavailable. Please use Whop for new subscriptions while PayPal service is being restored.
+      Automatic monthly subscription. Renews every month until cancelled. After PayPal approves the subscription, the licensing server verifies it and provides your LC-ROK license and private download here automatically.
     </p>
     <div id="paypal-terms-reminder" role="status" aria-live="polite" style="margin:14px 0 16px;padding:14px 15px;border:1px solid rgba(255,193,92,.55);border-radius:12px;background:rgba(255,174,56,.10);color:#ffe0a3;font-size:14px;line-height:1.45;font-weight:800;letter-spacing:.01em;">
-      TEMPORARILY UNAVAILABLE<br>
-      <span style="font-weight:600;color:#ffd28b;">PayPal checkout is temporarily unavailable. Please use Whop to purchase ROK Task Manager.</span>
+      PLEASE AGREE TO THE TERMS &amp; POLICY ABOVE BEFORE SUBSCRIBING.<br>
+      <span style="font-weight:600;color:#ffd28b;">The PayPal subscription checkout is disabled until the agreement box is checked.</span>
     </div>
-    <div id="paypal-buttons-wrap" hidden aria-hidden="true">
+    <div id="paypal-buttons-wrap">
       <div id="paypal-buttons-container"></div>
     </div>
-    <button type="button" class="btn btn-secondary" disabled style="width:100%;opacity:.62;cursor:not-allowed;">PayPal — Temporarily Unavailable</button>
-    <div id="paypal-subscription-status" aria-live="polite" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.5;">Please use Whop for new purchases.</div>
+    <div id="paypal-subscription-status" aria-live="polite" style="margin-top:10px;color:var(--muted);font-size:13px;line-height:1.5;"></div>
 
     <button type="button" id="paypal-pending-retry" hidden style="margin-top:12px;padding:0;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;">
       Retry license verification
@@ -581,20 +579,6 @@ async function setupPublicPayPalSubscriptionCheckout() {
   let paypalButtonRendered = false;
 
   const update = () => {
-    if (PAYPAL_CHECKOUT_TEMPORARILY_DISABLED) {
-      wrap.style.display = "none";
-      wrap.setAttribute("aria-disabled", "true");
-      if (termsReminder) {
-        termsReminder.innerHTML = '<strong>TEMPORARILY UNAVAILABLE</strong><br><span style="font-weight:600;color:#ffd28b;">PayPal checkout is temporarily unavailable. Please use Whop to purchase ROK Task Manager.</span>';
-        termsReminder.style.borderColor = "rgba(255,193,92,.55)";
-        termsReminder.style.background = "rgba(255,174,56,.10)";
-        termsReminder.style.color = "#ffe0a3";
-      }
-      status.style.color = "var(--muted)";
-      status.textContent = "Please use Whop for new purchases.";
-      return;
-    }
-
     const allowed = Boolean(agreement && agreement.checked);
     wrap.style.pointerEvents = allowed ? "auto" : "none";
     wrap.style.opacity = allowed ? "1" : "0.55";
@@ -665,7 +649,6 @@ async function setupPublicPayPalSubscriptionCheckout() {
     return false;
   };
 
-  if (!PAYPAL_CHECKOUT_TEMPORARILY_DISABLED) {
   try {
     const paypalSdk = await loadPayPalButtonsSdk();
     if (!paypalSdk || typeof paypalSdk.Buttons !== "function") {
@@ -723,7 +706,6 @@ async function setupPublicPayPalSubscriptionCheckout() {
     console.error("PayPal subscription startup error:", error);
     status.style.color = "#ffb4b4";
     status.textContent = error && error.message ? error.message : "PayPal subscription checkout could not be loaded.";
-  }
   }
 
   agreement?.addEventListener("change", () => {
