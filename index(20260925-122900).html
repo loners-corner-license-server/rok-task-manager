@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ROK Task Manager — Windows task management for multi-account routines, map gathering, city tasks, marches, and daily tasks." name="description"/>
+<title>ROK Task Manager | Loner's Corner</title>
+<link as="image" href="assets/feature-summary.png" rel="preload"/>
+<link href="assets/loners-corner-logo.png" rel="icon"/>
+<link href="styles.css" rel="stylesheet"/>
+<style>
+.requirements-section {
+  padding-top: 58px;
+  padding-bottom: 68px;
+}
+.requirements-copy h2 {
+  font-size: clamp(46px, 6vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+.requirements-copy .requirements-lead {
+  font-size: clamp(17px, 2vw, 21px);
+  max-width: 760px;
+}
+.requirements-warning-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 13px 17px;
+  border: 1px solid rgba(255, 173, 56, .45);
+  border-radius: 14px;
+  background: rgba(255, 126, 35, .08);
+  color: #ffd28b;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .04em;
+}
+.requirements-warning-link:hover {
+  border-color: rgba(255, 193, 92, .8);
+  color: #fff0c9;
+}
+.checkout-policy-note {
+  margin: 22px 0 10px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 750;
+}
+.checkout-agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin: 0 0 18px;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.checkout-agreement input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  accent-color: var(--cyan);
+}
+.checkout-agreement a {
+  color: var(--cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#checkout-status {
+  line-height: 1.55;
+}
+.fulfillment-result {
+  display: none;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid rgba(83, 226, 143, .35);
+  border-radius: 14px;
+  background: rgba(83, 226, 143, .06);
+}
+.fulfillment-result.visible {
+  display: block;
+}
+.license-key {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.055);
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.whop-recovery-toggle {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cyan);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.whop-recovery {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(111,200,255,.18);
+  border-radius: 14px;
+  background: rgba(46,214,255,.035);
+}
+.whop-recovery[hidden] { display: none !important; }
+.whop-recovery p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+.whop-recovery-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.whop-recovery-row input {
+  flex: 1 1 300px;
+  min-height: 48px;
+  padding: 0 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(170,211,255,.18);
+  background: rgba(255,255,255,.045);
+  color: #f4fbff;
+  font: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.whop-recovery-row input:focus { outline: 2px solid rgba(46,214,255,.32); outline-offset: 1px; }
+
+.dual-checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.checkout-option-panel {
+  height: 100%;
+}
+.checkout-option-panel .btn {
+  width: 100%;
+}
+.checkout-option-panel .whop-recovery-toggle {
+  display: inline-block;
+}
+@media (max-width: 960px) {
+  .dual-checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Multi-account value section */
+.multi-account-section {
+  position: relative;
+  padding-top: 28px;
+  padding-bottom: 76px;
+}
+.multi-account-shell {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(46,214,255,.11), transparent 36%),
+    linear-gradient(145deg, rgba(11,30,56,.9), rgba(6,17,33,.88));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+.multi-account-shell::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  right: -130px;
+  bottom: -170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,151,255,.16), transparent 68%);
+  pointer-events: none;
+}
+.multi-account-intro {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+.multi-account-intro h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+}
+.multi-account-intro h2 span { color: var(--cyan); }
+.multi-account-intro .lead {
+  margin: 0;
+  max-width: 850px;
+  color: #b4c7d9;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.7;
+}
+.multi-account-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 20px;
+  padding: 9px 13px;
+  border: 1px solid rgba(46,214,255,.25);
+  border-radius: 999px;
+  background: rgba(46,214,255,.055);
+  color: #c8f6ff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.walkaway-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 30px;
+}
+.walkaway-step {
+  min-height: 176px;
+  padding: 20px;
+  border: 1px solid rgba(170,211,255,.14);
+  border-radius: 18px;
+  background: rgba(255,255,255,.025);
+}
+.walkaway-step .step-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: rgba(46,214,255,.08);
+  font-size: 21px;
+}
+.walkaway-step b {
+  display: block;
+  margin-bottom: 7px;
+  color: #eef8ff;
+  font-size: 16px;
+}
+.walkaway-step span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.lifestyle-strip {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+.lifestyle-card,
+.multi-account-card {
+  padding: 22px;
+  border: 1px solid rgba(170,211,255,.14);
+  border-radius: 18px;
+  background: rgba(2,10,22,.34);
+}
+.lifestyle-card h3,
+.multi-account-card h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+}
+.lifestyle-card p,
+.multi-account-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.lifestyle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 16px;
+}
+.lifestyle-actions span {
+  padding: 8px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(170,211,255,.13);
+  background: rgba(255,255,255,.025);
+  color: #bdd0e1;
+  font-size: 12px;
+  font-weight: 700;
+}
+.mantra {
+  position: relative;
+  z-index: 1;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(170,211,255,.13);
+  text-align: center;
+  color: #d7e7f5;
+  font-weight: 850;
+  letter-spacing: .045em;
+  font-size: clamp(14px, 1.8vw, 18px);
+}
+.mantra strong { color: var(--cyan); }
+@media (max-width: 900px) {
+  .walkaway-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lifestyle-strip { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .multi-account-shell { padding: 24px 18px; }
+  .walkaway-grid { grid-template-columns: 1fr; }
+  .walkaway-step { min-height: 0; }
+}
+
+@media (max-width: 720px) {
+  .requirements-copy h2 {
+    font-size: clamp(40px, 12vw, 58px);
+  }
+}
+
+.capability-section { padding-top: 74px; padding-bottom: 58px; }
+.capability-heading { max-width: 850px; margin-bottom: 30px; }
+.capability-heading h2 { max-width: 820px; }
+.capability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.capability-card {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(12,31,56,.82), rgba(7,19,36,.82));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+.capability-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  background: rgba(46,214,255,.08);
+  border: 1px solid rgba(46,214,255,.16);
+}
+.capability-num {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+.capability-card h3 { margin: 0 0 8px; font-size: 21px; }
+.capability-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.task-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+.task-pills span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(170,211,255,.14);
+  background: rgba(255,255,255,.035);
+  color: #c7d8e9;
+  font-size: 11px;
+  font-weight: 750;
+}
+.capability-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 18px;
+  align-items: center;
+  margin-top: 22px;
+  padding: 20px 22px;
+  border: 1px solid rgba(46,214,255,.2);
+  border-radius: 18px;
+  background: rgba(46,214,255,.045);
+}
+.capability-summary div:not(.summary-arrow) { display: grid; gap: 5px; }
+.capability-summary strong { font-size: 12px; letter-spacing: .08em; color: #effaff; }
+.capability-summary span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+.summary-arrow { color: var(--cyan); font-size: 24px; font-weight: 900; }
+@media (max-width: 860px) {
+  .capability-grid { grid-template-columns: 1fr; }
+  .capability-summary { grid-template-columns: 1fr; }
+  .summary-arrow { transform: rotate(90deg); justify-self: start; }
+}
+@media (max-width: 520px) {
+  .capability-card { grid-template-columns: 1fr; }
+}
+
+.compact-multi-account {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+}
+.compact-multi-account .multi-account-intro { max-width: 760px; }
+.compact-multi-account .multi-account-intro h2 { margin-bottom: 12px; }
+.compact-multi-account .mantra { margin: 0; white-space: nowrap; }
+@media (max-width: 900px) {
+  .compact-multi-account { grid-template-columns: 1fr; }
+  .compact-multi-account .mantra { white-space: normal; }
+}
+</style>
+<style>
+/* v8.8 content redesign — intentionally scoped away from #subscribe. */
+.content-hero { padding-top: 78px; padding-bottom: 66px; }
+.content-hero-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr); gap:52px; align-items:center; }
+.content-hero h1 { font-size:clamp(50px,7vw,88px); line-height:.94; letter-spacing:-3.4px; margin:24px 0 22px; }
+.content-hero h1 span { background:linear-gradient(90deg,#fff 5%,#54dfff 48%,#aa74ff 94%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.content-hero .hero-sub { max-width:720px; }
+.source-badge { display:inline-flex; align-items:center; gap:8px; margin-top:17px; color:#a9bdd1; font-size:12px; font-weight:750; }
+.command-panel { position:relative; padding:26px; border:1px solid rgba(111,200,255,.22); border-radius:26px; background:radial-gradient(circle at 85% 0%,rgba(148,93,255,.14),transparent 34%),linear-gradient(155deg,rgba(11,30,56,.92),rgba(5,14,29,.95)); box-shadow:var(--shadow); overflow:hidden; }
+.command-panel::after { content:""; position:absolute; width:220px; height:220px; right:-110px; bottom:-110px; border-radius:50%; background:radial-gradient(circle,rgba(46,214,255,.17),transparent 68%); pointer-events:none; }
+.command-top { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:20px; }
+.command-title { font-size:18px; font-weight:900; }
+.command-state { padding:7px 10px; border:1px solid rgba(83,226,143,.3); border-radius:999px; color:#aef3ca; background:rgba(83,226,143,.06); font-size:11px; font-weight:900; letter-spacing:.08em; }
+.command-list { display:grid; gap:10px; position:relative; z-index:1; }
+.command-row { display:grid; grid-template-columns:38px 1fr auto; gap:12px; align-items:center; padding:13px 14px; border:1px solid rgba(170,211,255,.12); border-radius:14px; background:rgba(255,255,255,.025); }
+.command-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background:rgba(46,214,255,.08); font-size:17px; }
+.command-row b { display:block; font-size:14px; }
+.command-row small { display:block; margin-top:2px; color:var(--muted); font-size:11px; }
+.command-check { color:var(--success); font-weight:900; }
+
+.info-section { padding-top:74px; padding-bottom:74px; }
+.info-heading { max-width:840px; margin-bottom:30px; }
+.info-heading h2 { max-width:820px; }
+.task-board { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.task-card { min-height:240px; padding:25px; border:1px solid rgba(111,200,255,.16); border-radius:22px; background:linear-gradient(180deg,rgba(11,30,56,.82),rgba(6,17,33,.82)); }
+.task-card-head { display:flex; gap:14px; align-items:center; margin-bottom:16px; }
+.task-card-head span { width:44px; height:44px; display:grid; place-items:center; border-radius:13px; background:rgba(46,214,255,.08); font-size:21px; }
+.task-card h3 { margin:0; font-size:21px; }
+.clean-list { list-style:none; margin:0; padding:0; display:grid; gap:9px; }
+.clean-list li { position:relative; padding-left:19px; color:#a9bdd1; font-size:14px; line-height:1.5; }
+.clean-list li::before { content:"•"; position:absolute; left:2px; color:var(--cyan); font-weight:900; }
+.task-note { margin-top:14px; padding-top:13px; border-top:1px solid rgba(170,211,255,.11); color:#7f97ad; font-size:12px; }
+
+.switch-band { padding:0 0 74px; }
+.switch-shell { display:grid; grid-template-columns:1.15fr .85fr; gap:22px; padding:30px; border:1px solid rgba(46,214,255,.2); border-radius:24px; background:radial-gradient(circle at 0% 0%,rgba(46,214,255,.1),transparent 36%),rgba(7,20,39,.64); }
+.switch-copy h2 { margin:8px 0 12px; font-size:clamp(34px,4.5vw,54px); line-height:1.02; letter-spacing:-2px; }
+.switch-copy p { color:#a9bdd1; font-size:16px; line-height:1.65; }
+.switch-facts { display:grid; gap:10px; }
+.switch-fact { padding:17px; border:1px solid rgba(170,211,255,.12); border-radius:16px; background:rgba(255,255,255,.025); }
+.switch-fact strong { display:block; margin-bottom:4px; font-size:14px; }
+.switch-fact span { color:var(--muted); font-size:12px; }
+
+.farmer-grid { display:grid; grid-template-columns:.85fr 1.15fr; gap:18px; align-items:stretch; }
+.farmer-lead, .historical-card { padding:28px; border-radius:24px; border:1px solid rgba(170,211,255,.14); background:rgba(255,255,255,.025); }
+.farmer-lead h2 { margin:10px 0 13px; font-size:clamp(34px,4.5vw,52px); line-height:1.03; letter-spacing:-2px; }
+.farmer-lead p { color:var(--muted); }
+.metric-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+.metric { padding:16px; border:1px solid rgba(170,211,255,.12); border-radius:15px; background:rgba(2,10,22,.35); }
+.metric strong { display:block; color:#f4fbff; font-size:20px; }
+.metric span { color:var(--muted); font-size:11px; }
+.historical-card { border-color:rgba(255,212,106,.24); background:linear-gradient(180deg,rgba(255,212,106,.045),rgba(6,17,33,.76)); }
+.historical-card h3 { margin:0 0 9px; font-size:20px; }
+.historical-card .historical-number { margin:18px 0 4px; color:#fff1bb; font-size:clamp(34px,5vw,58px); font-weight:950; letter-spacing:-2px; }
+.historical-card .historical-caption { color:#b9c9d8; font-size:13px; }
+.historical-card .fineprint { margin-top:18px; color:#71879c; font-size:11px; line-height:1.55; }
+
+.setup-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.setup-card { padding:28px; border:1px solid rgba(170,211,255,.14); border-radius:22px; background:linear-gradient(180deg,rgba(11,30,56,.76),rgba(6,17,33,.78)); }
+.setup-num { color:var(--cyan); font-weight:950; font-size:12px; letter-spacing:.14em; }
+.setup-card h3 { margin:9px 0 16px; font-size:23px; }
+.schedule-row { display:grid; grid-template-columns:140px 1fr; gap:14px; padding:12px 0; border-top:1px solid rgba(170,211,255,.10); }
+.schedule-row:first-of-type { border-top:0; }
+.schedule-row strong { font-size:13px; }
+.schedule-row span { color:var(--muted); font-size:13px; }
+
+.requirement-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.requirement-panel { padding:26px; border:1px solid rgba(170,211,255,.14); border-radius:22px; background:rgba(255,255,255,.025); }
+.requirement-panel h3 { margin:0 0 17px; font-size:21px; }
+.requirement-grid { display:grid; gap:10px; }
+.requirement-item { padding:14px 15px; border:1px solid rgba(170,211,255,.11); border-radius:14px; background:rgba(2,10,22,.28); }
+.requirement-item b { display:block; font-size:13px; }
+.requirement-item span { display:block; margin-top:3px; color:var(--muted); font-size:12px; }
+
+.utility-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.utility-card { padding:24px; border:1px solid rgba(170,211,255,.14); border-radius:20px; background:rgba(255,255,255,.025); }
+.utility-card h3 { margin:0 0 14px; font-size:19px; }
+.keycap { display:inline-flex; min-width:72px; justify-content:center; margin-right:8px; padding:7px 9px; border:1px solid rgba(170,211,255,.18); border-bottom-width:3px; border-radius:9px; background:#08172c; color:#eef8ff; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; font-weight:900; }
+.utility-card p, .utility-card li { color:var(--muted); font-size:13px; line-height:1.55; }
+.utility-card ul { margin:0; padding-left:18px; }
+.utility-card li + li { margin-top:7px; }
+.warning-card { border-color:rgba(255,173,56,.3); background:rgba(255,126,35,.045); }
+
+.demo-compact { max-width:900px; margin:0 auto; display:grid; grid-template-columns:1fr auto; gap:28px; align-items:center; padding:30px; border:1px solid rgba(46,214,255,.2); border-radius:24px; background:radial-gradient(circle at 0 0,rgba(46,214,255,.08),transparent 34%),rgba(7,20,39,.68); }
+.demo-compact h2 { margin:7px 0 10px; font-size:clamp(32px,4.5vw,48px); }
+.demo-compact p { margin:0; color:var(--muted); }
+.demo-actions { min-width:220px; display:grid; gap:10px; }
+
+@media (max-width:960px) {
+  .content-hero-grid,.switch-shell,.farmer-grid,.demo-compact { grid-template-columns:1fr; }
+  .task-board,.setup-grid,.requirement-columns { grid-template-columns:1fr; }
+  .utility-grid { grid-template-columns:1fr; }
+  .metric-grid { grid-template-columns:1fr; }
+  .demo-actions { min-width:0; }
+}
+@media (max-width:600px) {
+  .content-hero h1 { letter-spacing:-2.4px; }
+  .command-row { grid-template-columns:34px 1fr; }
+  .command-check { display:none; }
+  .schedule-row { grid-template-columns:1fr; gap:4px; }
+}
+</style>
+</head>
+<body>
+<div class="ambient ambient-a"></div>
+<div class="ambient ambient-b"></div>
+<header class="site-header" id="top">
+<div class="container nav-wrap">
+<a aria-label="Loner's Corner home" class="brand" href="#top">
+<img alt="Loner's Corner logo" src="assets/loners-corner-logo.png"/>
+<span><strong>ROK Task Manager</strong><small>by Loner's Corner</small></span>
+</a>
+<button aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation" class="menu-btn"><span></span><span></span><span></span></button>
+<nav class="nav-links" id="nav-links">
+<a href="#tasks">Tasks</a><a href="#switching">Auto Switching</a><a href="#setup">Suggested Setup</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a>
+</nav>
+</div>
+</header>
+<main>
+
+<section class="section content-hero">
+<div class="container content-hero-grid">
+<div class="hero-copy reveal">
+<div class="eyebrow"><span class="status-dot"></span> Windows PC task manager</div>
+<h1>Built for<br/><span>heavy farmers.</span></h1>
+<p class="hero-sub">Choose the tasks you want to run across your starred characters and saved account logins. Once the checked tasks are done, ROK Task Manager can continue through the next character and then the next account.</p>
+<div class="hero-actions">
+<a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
+<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Free Demo</a>
+<a class="btn btn-secondary" href="#requirements">Check Requirements</a>
+</div>
+<div class="source-badge">Starred characters only • Official PC client • No emulator</div>
+</div>
+<div class="command-panel reveal delay-1" aria-label="ROK Task Manager task summary">
+<div class="command-top"><div class="command-title">Task cycle</div><div class="command-state">READY</div></div>
+<div class="command-list">
+<div class="command-row"><div class="command-icon">🏙️</div><div><b>City Maintenance</b><small>Alliance Donation • City RSS • Alliance Help • Alliance RSS</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">⚔️</div><div><b>1 Troop March &amp; Pit March</b><small>Send to a building/fort • Send to pit</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">🗺️</div><div><b>Map Gathering</b><small>Priority RSS or All RSS • Home/Lost Kingdom setting</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">🎁</div><div><b>City Management</b><small>Tavern • Expedition • VIP • Daily Objectives • Mail</small></div><div class="command-check">✓</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section info-section" id="tasks">
+<div class="container">
+<div class="section-heading left reveal info-heading"><span class="kicker">TASKS</span><h2>Choose only what you want to run.</h2><p>The checked tasks run for the current character before the task manager moves on.</p></div>
+<div class="task-board">
+<article class="task-card reveal"><div class="task-card-head"><span>🏙️</span><h3>City Maintenance</h3></div><ul class="clean-list"><li>Alliance Donation</li><li>Collect city RSS</li><li>Alliance Help</li><li>Collect Alliance RSS</li></ul></article>
+<article class="task-card reveal delay-1"><div class="task-card-head"><span>⚔️</span><h3>March Tasks</h3></div><ul class="clean-list"><li><strong>1 Troop March:</strong> send to a building / fort</li><li><strong>Pit March:</strong> send to pit</li></ul></article>
+<article class="task-card reveal"><div class="task-card-head"><span>🗺️</span><h3>Map Gathering</h3></div><ul class="clean-list"><li>Select a priority RSS or choose All RSS</li><li>Select Lost Kingdom if one of your accounts is in the Lost Kingdom</li></ul></article>
+<article class="task-card reveal delay-1"><div class="task-card-head"><span>🎁</span><h3>City Management</h3></div><ul class="clean-list"><li>Collect tavern chests</li><li>Collect expedition rewards</li><li>Collect VIP rewards</li><li>Collect daily objectives</li><li>Read / claim mails</li></ul></article>
+</div>
+</div>
+</section>
+
+<section class="switch-band" id="switching">
+<div class="container">
+<div class="switch-shell reveal">
+<div class="switch-copy"><span class="kicker">AUTO SWITCHING</span><h2>Finish the checked tasks, then move on.</h2><p>Both the DEMO and paid version can automatically switch between starred characters after the checked tasks are completed. Once all characters are finished, the task manager can switch accounts as well.</p></div>
+<div class="switch-facts">
+<div class="switch-fact"><strong>Starred characters only</strong><span>Character switching follows the starred character list.</span></div>
+<div class="switch-fact"><strong>Account switching</strong><span>Moves to the next saved login after all characters are done.</span></div>
+<div class="switch-fact"><strong>ROK PC login limit</strong><span>The PC version can retain 10 log-ins for account switching.</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section info-section">
+<div class="container farmer-grid">
+<div class="farmer-lead reveal"><span class="kicker">FOR HEAVY FARMERS</span><h2>Designed for larger farm setups.</h2><p>The supplied usage notes recommend the app for heavy farmers and identify a minimum of 12 accounts as the RSS-value breakeven point.</p><div class="metric-grid"><div class="metric"><strong>12+</strong><span>Accounts noted as RSS-value breakeven</span></div><div class="metric"><strong>6×</strong><span>Gathering cycles per day in the historical example</span></div><div class="metric"><strong>60</strong><span>Farm accounts in the historical example</span></div></div></div>
+<div class="historical-card reveal delay-1"><span class="kicker">HISTORICAL EXAMPLE</span><h3>Provided farm-account data</h3><div class="historical-number">&gt;15B / month</div><div class="historical-caption">Historical data from 60 farm accounts with maxed RSS tech and RSS buildings, gathering 6× per day.</div><div class="historical-number" style="font-size:34px; margin-top:20px;">$270</div><div class="historical-caption">Reference value shown in the supplied material at $18 USD per 1B RSS.</div><div class="fineprint">Historical example only. Actual results depend on account development, activity, available marches, gathering conditions, and other in-game factors.</div></div>
+</div>
+</section>
+
+<section class="section info-section" id="setup">
+<div class="container">
+<div class="section-heading left reveal info-heading"><span class="kicker">SUGGESTED SETUP</span><h2>A practical task schedule.</h2><p>The supplied notes separate always-on gathering tasks from tasks you may only need at certain times of day.</p></div>
+<div class="setup-grid">
+<article class="setup-card reveal"><span class="setup-num">SETUP 01</span><h3>Pit March &amp; Map Gathering</h3><div class="schedule-row"><strong>Setting</strong><span>Always ON</span></div><div class="schedule-row"><strong>Reference timing</strong><span>100 characters total: about 3 hours</span></div></article>
+<article class="setup-card reveal delay-1"><span class="setup-num">SETUP 02</span><h3>Turn tasks on when needed</h3><div class="schedule-row"><strong>1 Troop March</strong><span>ON before sleep time</span></div><div class="schedule-row"><strong>City Management</strong><span>ON once a day before reset, if you want the extra rewards; it adds time to the full cycle</span></div><div class="schedule-row"><strong>City Maintenance</strong><span>ON twice a day — about every 10 hours</span></div></article>
+</div>
+</div>
+</section>
+
+<section class="section requirements-section" id="requirements">
+<div class="container">
+<div class="section-heading left reveal info-heading"><span class="kicker">REQUIREMENTS</span><h2>Match the supported setup.</h2><p>The task manager relies on a consistent PC-client layout.</p></div>
+<div class="requirement-columns">
+<div class="requirement-panel reveal"><h3>In-game requirements</h3><div class="requirement-grid"><div class="requirement-item"><b>CH16 minimum</b><span>Use starred characters.</span></div><div class="requirement-item"><b>Character names</b><span>English-format names are easier to distinguish.</span></div><div class="requirement-item"><b>Map style</b><span>Original</span></div><div class="requirement-item"><b>Graphics quality</b><span>Ultra</span></div><div class="requirement-item"><b>Resolution mode</b><span>Fullscreen</span></div></div></div>
+<div class="requirement-panel reveal delay-1"><h3>PC requirements</h3><div class="requirement-grid"><div class="requirement-item"><b>Display scale</b><span>100%</span></div><div class="requirement-item"><b>Display resolution</b><span>1920 × 1080</span></div><div class="requirement-item"><b>Client</b><span>ROK PC client version only</span></div><div class="requirement-item"><b>Emulator</b><span>Not supported</span></div></div></div>
+</div>
+</div>
+</section>
+
+<section class="section info-section">
+<div class="container">
+<div class="section-heading left reveal info-heading"><span class="kicker">CONTROLS &amp; NOTES</span><h2>What to know while it runs.</h2></div>
+<div class="utility-grid">
+<div class="utility-card reveal"><h3>Shortcuts</h3><p><span class="keycap">Ctrl + P</span> Pause</p><p><span class="keycap">Ctrl + Esc</span> Stop and close the app</p></div>
+<div class="utility-card reveal delay-1"><h3>Restart behavior</h3><p>After the app is closed and restarted, the functions will run through the characters and accounts again. It does not recall the previous app run.</p><p>Close the app once you are done with all of your accounts.</p></div>
+<div class="utility-card warning-card reveal delay-2"><h3>Usual bugs</h3><ul><li>May click the in-game shop</li><li>May click the RSS information in the top-right corner</li><li>May miss city RSS when it is behind the chat box</li></ul></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="demo">
+<div class="container">
+<div class="demo-compact reveal"><div><span class="kicker">FREE DEMO</span><h2>Test the supported setup first.</h2><p>The supplied notes recommend the free demo for Alliance Credits generation and pit gathering. Both the demo and paid version support automatic switching between starred characters and accounts.</p></div><div class="demo-actions"><a class="btn btn-primary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Download Free Demo</a><a class="btn btn-secondary" href="#requirements">Check Requirements</a></div></div>
+</div>
+</section>
+<section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>Choose your payment option</h2><p id="checkout-provider-copy">One Windows PC license. Choose automatic monthly billing with Whop or PayPal.</p></div><div class="feature-card reveal" style="max-width:1120px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">ROK Task Manager — $50 USD</h3><p style="margin-bottom:16px;">Choose your payment provider. Both Whop and PayPal renew automatically each month until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Whop — $50 USD / month</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">Automatic monthly subscription. Renews every month until cancelled. After payment is verified, your license key and private download access will be provided here.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop — $50/month</button><button class="whop-recovery-toggle" id="whop-recovery-toggle" type="button">Already purchased? Recover license &amp; download</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div><div class="whop-recovery" id="whop-recovery" hidden><p><strong>Recover existing purchase</strong></p><p>Enter the <strong>LC-ROK-...</strong> license key issued by Loner's Corner. This does not create a new charge.</p><div class="whop-recovery-row"><input id="whop-recovery-license-key" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Loner's Corner license key"/><button class="btn btn-secondary" id="whop-recovery-button" type="button">Recover Access</button></div><div aria-live="polite" id="whop-recovery-status" style="margin-top:10px; color:var(--muted); font-size:13px; line-height:1.5;"></div></div></div><div aria-live="polite" class="fulfillment-result" id="fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After payment is confirmed, the licensing server verifies the purchase and provides your license key and private download access.</p></div></div></section>
+
+<section class="section" id="faq">
+<div class="container faq-wrap">
+<div class="section-heading left reveal"><span class="kicker">FAQ</span><h2>Quick answers.</h2><p>These answers reflect the supplied Task Manager notes.</p><a class="btn btn-secondary js-discord-link" href="#">Join Discord</a></div>
+<div class="faq-list reveal delay-1">
+<details open><summary>Does it work with an emulator?</summary><p>No. The supported setup is the ROK PC client only.</p></details>
+<details><summary>What display settings are required?</summary><p>Use 1920 × 1080 display resolution, 100% Windows display scale, fullscreen, Ultra graphics, and Original map style.</p></details>
+<details><summary>Which characters are processed?</summary><p>Automatic character switching uses starred characters.</p></details>
+<details><summary>Does it switch accounts?</summary><p>Yes. After the characters are completed, it can switch to the next saved account login. The supplied notes state that the ROK PC version can retain 10 log-ins.</p></details>
+<details><summary>Does the app remember the previous run after I close it?</summary><p>No. Restarting the app runs the functions through the characters and accounts again.</p></details>
+</div>
+</div>
+</section>
+<section class="cta-section section"><div class="container cta-card reveal"><div><span class="kicker">READY TO START?</span><h2>Check your setup, then choose your tasks.</h2><p>Use the free demo first or return to the existing checkout when you are ready.</p></div><div class="cta-actions"><a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a><a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Free Demo</a></div></div></section>
+</main>
+<footer class="footer">
+<div class="container footer-grid">
+<div class="footer-brand">
+<img alt="Loner's Corner" src="assets/loners-corner-logo.png"/>
+<div><strong>ROK Task Manager</strong><span>by Loner's Corner</span></div>
+</div>
+<div class="footer-links">
+<a href="#requirements">Requirements</a>
+<a href="#faq">FAQ</a>
+<a href="legal.html">Terms &amp; Disclaimer</a>
+<a class="js-discord-link" href="#">Support</a>
+</div>
+</div>
+<div class="container legal-note">
+<p>ROK Task Manager is an independent third-party task-management utility. It is not affiliated with, sponsored by, or endorsed by the game's publisher or developer. Users are responsible for reviewing and complying with the applicable game terms and policies.</p>
+<p>© <span id="year"></span> Loner's Corner. All rights reserved.</p>
+</div>
+</footer>
+<dialog class="lightbox" id="lightbox">
+<button aria-label="Close image" class="lightbox-close">×</button>
+<img alt="" id="lightbox-img" src=""/>
+<p id="lightbox-title"></p>
+</dialog>
+<script src="script.js"></script>
+</body>
+</html>
