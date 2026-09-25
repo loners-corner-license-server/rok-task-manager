@@ -415,7 +415,132 @@
   .compact-multi-account { grid-template-columns: 1fr; }
   .compact-multi-account .mantra { white-space: normal; }
 }
-</style></head>
+</style>
+<style>
+/* v8.8 content redesign — intentionally scoped away from #subscribe. */
+.content-hero { padding-top: 78px; padding-bottom: 66px; }
+.content-hero-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr); gap:52px; align-items:center; }
+.content-hero h1 { font-size:clamp(50px,7vw,88px); line-height:.94; letter-spacing:-3.4px; margin:24px 0 22px; }
+.content-hero h1 span { background:linear-gradient(90deg,#fff 5%,#54dfff 48%,#aa74ff 94%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.content-hero .hero-sub { max-width:720px; }
+.source-badge { display:inline-flex; align-items:center; gap:8px; margin-top:17px; color:#a9bdd1; font-size:12px; font-weight:750; }
+.command-panel { position:relative; padding:26px; border:1px solid rgba(111,200,255,.22); border-radius:26px; background:radial-gradient(circle at 85% 0%,rgba(148,93,255,.14),transparent 34%),linear-gradient(155deg,rgba(11,30,56,.92),rgba(5,14,29,.95)); box-shadow:var(--shadow); overflow:hidden; }
+.command-panel::after { content:""; position:absolute; width:220px; height:220px; right:-110px; bottom:-110px; border-radius:50%; background:radial-gradient(circle,rgba(46,214,255,.17),transparent 68%); pointer-events:none; }
+.command-top { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:20px; }
+.command-title { font-size:18px; font-weight:900; }
+.command-state { padding:7px 10px; border:1px solid rgba(83,226,143,.3); border-radius:999px; color:#aef3ca; background:rgba(83,226,143,.06); font-size:11px; font-weight:900; letter-spacing:.08em; }
+.command-list { display:grid; gap:10px; position:relative; z-index:1; }
+.command-row { display:grid; grid-template-columns:38px 1fr auto; gap:12px; align-items:center; padding:13px 14px; border:1px solid rgba(170,211,255,.12); border-radius:14px; background:rgba(255,255,255,.025); }
+.command-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background:rgba(46,214,255,.08); font-size:17px; }
+.command-row b { display:block; font-size:14px; }
+.command-row small { display:block; margin-top:2px; color:var(--muted); font-size:11px; }
+.command-check { color:var(--success); font-weight:900; }
+
+.info-section { padding-top:74px; padding-bottom:74px; }
+.info-heading { max-width:840px; margin-bottom:30px; }
+.info-heading h2 { max-width:820px; }
+.task-board { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.task-card { min-height:240px; padding:25px; border:1px solid rgba(111,200,255,.16); border-radius:22px; background:linear-gradient(180deg,rgba(11,30,56,.82),rgba(6,17,33,.82)); }
+.task-card-head { display:flex; gap:14px; align-items:center; margin-bottom:16px; }
+.task-card-head span { width:44px; height:44px; display:grid; place-items:center; border-radius:13px; background:rgba(46,214,255,.08); font-size:21px; }
+.task-card h3 { margin:0; font-size:21px; }
+.clean-list { list-style:none; margin:0; padding:0; display:grid; gap:9px; }
+.clean-list li { position:relative; padding-left:19px; color:#a9bdd1; font-size:14px; line-height:1.5; }
+.clean-list li::before { content:"•"; position:absolute; left:2px; color:var(--cyan); font-weight:900; }
+.task-note { margin-top:14px; padding-top:13px; border-top:1px solid rgba(170,211,255,.11); color:#7f97ad; font-size:12px; }
+
+.switch-band { padding:0 0 74px; }
+.switch-shell { display:grid; grid-template-columns:1.15fr .85fr; gap:22px; padding:30px; border:1px solid rgba(46,214,255,.2); border-radius:24px; background:radial-gradient(circle at 0% 0%,rgba(46,214,255,.1),transparent 36%),rgba(7,20,39,.64); }
+.switch-copy h2 { margin:8px 0 12px; font-size:clamp(34px,4.5vw,54px); line-height:1.02; letter-spacing:-2px; }
+.switch-copy p { color:#a9bdd1; font-size:16px; line-height:1.65; }
+.switch-facts { display:grid; gap:10px; }
+.switch-fact { padding:17px; border:1px solid rgba(170,211,255,.12); border-radius:16px; background:rgba(255,255,255,.025); }
+.switch-fact strong { display:block; margin-bottom:4px; font-size:14px; }
+.switch-fact span { color:var(--muted); font-size:12px; }
+
+.farmer-grid { display:grid; grid-template-columns:.85fr 1.15fr; gap:18px; align-items:stretch; }
+.farmer-lead, .historical-card { padding:28px; border-radius:24px; border:1px solid rgba(170,211,255,.14); background:rgba(255,255,255,.025); }
+.farmer-lead h2 { margin:10px 0 13px; font-size:clamp(34px,4.5vw,52px); line-height:1.03; letter-spacing:-2px; }
+.farmer-lead p { color:var(--muted); }
+.metric-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+.metric { padding:16px; border:1px solid rgba(170,211,255,.12); border-radius:15px; background:rgba(2,10,22,.35); }
+.metric strong { display:block; color:#f4fbff; font-size:20px; }
+.metric span { color:var(--muted); font-size:11px; }
+.historical-card { border-color:rgba(255,212,106,.24); background:linear-gradient(180deg,rgba(255,212,106,.045),rgba(6,17,33,.76)); }
+.historical-card h3 { margin:0 0 9px; font-size:20px; }
+.historical-card .historical-number { margin:18px 0 4px; color:#fff1bb; font-size:clamp(34px,5vw,58px); font-weight:950; letter-spacing:-2px; }
+.historical-card .historical-caption { color:#b9c9d8; font-size:13px; }
+.historical-card .fineprint { margin-top:18px; color:#71879c; font-size:11px; line-height:1.55; }
+
+.setup-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.setup-card { padding:28px; border:1px solid rgba(170,211,255,.14); border-radius:22px; background:linear-gradient(180deg,rgba(11,30,56,.76),rgba(6,17,33,.78)); }
+.setup-num { color:var(--cyan); font-weight:950; font-size:12px; letter-spacing:.14em; }
+.setup-card h3 { margin:9px 0 16px; font-size:23px; }
+.schedule-row { display:grid; grid-template-columns:140px 1fr; gap:14px; padding:12px 0; border-top:1px solid rgba(170,211,255,.10); }
+.schedule-row:first-of-type { border-top:0; }
+.schedule-row strong { font-size:13px; }
+.schedule-row span { color:var(--muted); font-size:13px; }
+
+.requirement-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.requirement-panel { padding:26px; border:1px solid rgba(170,211,255,.14); border-radius:22px; background:rgba(255,255,255,.025); }
+.requirement-panel h3 { margin:0 0 17px; font-size:21px; }
+.requirement-grid { display:grid; gap:10px; }
+.requirement-item { padding:14px 15px; border:1px solid rgba(170,211,255,.11); border-radius:14px; background:rgba(2,10,22,.28); }
+.requirement-item b { display:block; font-size:13px; }
+.requirement-item span { display:block; margin-top:3px; color:var(--muted); font-size:12px; }
+
+.utility-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.utility-card { padding:24px; border:1px solid rgba(170,211,255,.14); border-radius:20px; background:rgba(255,255,255,.025); }
+.utility-card h3 { margin:0 0 14px; font-size:19px; }
+.keycap { display:inline-flex; min-width:72px; justify-content:center; margin-right:8px; padding:7px 9px; border:1px solid rgba(170,211,255,.18); border-bottom-width:3px; border-radius:9px; background:#08172c; color:#eef8ff; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; font-weight:900; }
+.utility-card p, .utility-card li { color:var(--muted); font-size:13px; line-height:1.55; }
+.utility-card ul { margin:0; padding-left:18px; }
+.utility-card li + li { margin-top:7px; }
+.warning-card { border-color:rgba(255,173,56,.3); background:rgba(255,126,35,.045); }
+
+.demo-compact { max-width:900px; margin:0 auto; display:grid; grid-template-columns:1fr auto; gap:28px; align-items:center; padding:30px; border:1px solid rgba(46,214,255,.2); border-radius:24px; background:radial-gradient(circle at 0 0,rgba(46,214,255,.08),transparent 34%),rgba(7,20,39,.68); }
+.demo-compact h2 { margin:7px 0 10px; font-size:clamp(32px,4.5vw,48px); }
+.demo-compact p { margin:0; color:var(--muted); }
+.demo-actions { min-width:220px; display:grid; gap:10px; }
+
+@media (max-width:960px) {
+  .content-hero-grid,.switch-shell,.farmer-grid,.demo-compact { grid-template-columns:1fr; }
+  .task-board,.setup-grid,.requirement-columns { grid-template-columns:1fr; }
+  .utility-grid { grid-template-columns:1fr; }
+  .metric-grid { grid-template-columns:1fr; }
+  .demo-actions { min-width:0; }
+}
+@media (max-width:600px) {
+  .content-hero h1 { letter-spacing:-2.4px; }
+  .command-row { grid-template-columns:34px 1fr; }
+  .command-check { display:none; }
+  .schedule-row { grid-template-columns:1fr; gap:4px; }
+}
+</style>
+
+<style>
+/* v8.9 source-photo additions — scoped outside #subscribe. */
+.source-photo { display:block; width:100%; height:auto; border-radius:16px; border:1px solid rgba(170,211,255,.16); background:rgba(255,255,255,.025); box-shadow:0 18px 44px rgba(0,0,0,.20); }
+.source-photo-card { margin:0; padding:12px; border:1px solid rgba(170,211,255,.14); border-radius:20px; background:linear-gradient(180deg,rgba(11,30,56,.68),rgba(6,17,33,.72)); }
+.source-photo-card figcaption { padding:10px 4px 2px; color:#8fa6ba; font-size:12px; line-height:1.45; }
+.source-photo-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:22px; }
+.source-photo-grid.four { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.source-photo-grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.source-photo-grid.compact .source-photo-card { padding:10px; }
+.source-photo-grid.compact .source-photo { max-height:260px; object-fit:contain; background:#fff; }
+.hero-source-shot { margin-top:18px; position:relative; z-index:1; }
+.hero-source-shot .source-photo { max-height:300px; object-fit:contain; background:#f7f9fb; }
+.source-photo-title { margin:28px 0 8px; color:#eff8ff; font-size:16px; font-weight:900; }
+.requirements-visuals { margin-top:22px; }
+.requirements-visuals .source-photo { height:230px; object-fit:contain; background:#fff; }
+.bug-visuals .source-photo { height:220px; object-fit:contain; background:#fff; }
+.demo-with-photo { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,320px); gap:24px; align-items:center; }
+.demo-source-photo { margin:0; padding:12px; border:1px solid rgba(46,214,255,.18); border-radius:20px; background:rgba(46,214,255,.035); }
+.demo-source-photo .source-photo { max-height:330px; object-fit:contain; background:#fff; }
+@media (max-width:1000px) { .source-photo-grid.four { grid-template-columns:repeat(2,minmax(0,1fr)); } .source-photo-grid.three { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:760px) { .source-photo-grid,.source-photo-grid.four,.source-photo-grid.three,.demo-with-photo { grid-template-columns:1fr; } .requirements-visuals .source-photo,.bug-visuals .source-photo { height:auto; max-height:360px; } }
+</style>
+</head>
 <body>
 <div class="ambient ambient-a"></div>
 <div class="ambient ambient-b"></div>
@@ -423,223 +548,148 @@
 <div class="container nav-wrap">
 <a aria-label="Loner's Corner home" class="brand" href="#top">
 <img alt="Loner's Corner logo" src="assets/loners-corner-logo.png"/>
-<span>
-<strong>ROK Task Manager</strong>
-<small>by Loner's Corner</small>
-</span>
+<span><strong>ROK Task Manager</strong><small>by Loner's Corner</small></span>
 </a>
-<button aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation" class="menu-btn">
-<span></span><span></span><span></span>
-</button>
+<button aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation" class="menu-btn"><span></span><span></span><span></span></button>
 <nav class="nav-links" id="nav-links">
-
-
-
-
-
-
-<a href="#features">Tasks</a><a href="#multi-account">Why ROK TM</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a></nav>
+<a href="#tasks">Tasks</a><a href="#switching">Auto Switching</a><a href="#setup">Suggested Setup</a><a href="#requirements">Requirements</a><a href="#demo">Free Demo</a><a href="#faq">FAQ</a><a class="nav-cta js-discord-link" href="#">Discord</a>
+</nav>
 </div>
 </header>
 <main>
-<section class="hero section">
-<div class="container hero-grid">
+
+<section class="section content-hero">
+<div class="container content-hero-grid">
 <div class="hero-copy reveal">
 <div class="eyebrow"><span class="status-dot"></span> Windows PC task manager</div>
-<h1>More time.<br/><span>Less repetition.</span></h1>
-<p class="hero-sub">ROK Task Manager handles repetitive PC-client routines across your characters and accounts, so you can spend less time repeating the same clicks every day.</p>
-<p class="hero-sub"><strong>Primary focus:</strong> Resource gathering, Alliance Credit building, city routines, marches, and daily tasks.</p><a class="requirements-warning-link" href="#requirements">⚠ SYSTEM REQUIREMENTS — READ BEFORE DOWNLOAD OR PURCHASE</a>
+<h1>Built for<br/><span>heavy farmers.</span></h1>
+<p class="hero-sub">Choose the tasks you want to run across your starred characters and saved account logins. Once the checked tasks are done, ROK Task Manager can continue through the next character and then the next account.</p>
 <div class="hero-actions">
 <a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
-<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try It Now — Free Demo</a>
-<a class="btn btn-secondary" href="#features">Explore features</a>
+<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Free Demo</a>
+<a class="btn btn-secondary" href="#requirements">Check Requirements</a>
 </div>
-<div class="hero-points">
-<span>✓ Multi-account workflow</span>
-<span>✓ Selectable task cycles</span>
-<span>✓ Built-in recovery logic</span>
+<div class="source-badge">Starred characters only • Official PC client • No emulator</div>
 </div>
+<div class="command-panel reveal delay-1" aria-label="ROK Task Manager task summary">
+<div class="command-top"><div class="command-title">Task cycle</div><div class="command-state">READY</div></div>
+<div class="command-list">
+<div class="command-row"><div class="command-icon">🏙️</div><div><b>City Maintenance</b><small>Alliance Donation • City RSS • Alliance Help • Alliance RSS</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">⚔️</div><div><b>1 Troop March &amp; Pit March</b><small>Send to a building/fort • Send to pit</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">🗺️</div><div><b>Map Gathering</b><small>Priority RSS or All RSS • Home/Lost Kingdom setting</small></div><div class="command-check">✓</div></div>
+<div class="command-row"><div class="command-icon">🎁</div><div><b>City Management</b><small>Tavern • Expedition • VIP • Daily Objectives • Mail</small></div><div class="command-check">✓</div></div>
 </div>
-<div class="hero-media reveal delay-1">
-<div class="screen-card glow-card">
-<img alt="ROK Task Manager feature summary" src="assets/feature-summary.png"/>
-</div>
+<figure class="hero-source-shot"><img class="source-photo" src="assets/guide/paid-task-manager.png" alt="ROK Task Manager paid interface from the supplied guide" loading="eager"/><figcaption style="margin-top:9px;color:#8097ac;font-size:11px;">Paid Task Manager interface shown in the supplied guide.</figcaption></figure>
 </div>
 </div>
 </section>
-<section class="section capability-section" id="features">
+
+<section class="section info-section" id="tasks">
 <div class="container">
-  <div class="section-heading reveal capability-heading">
-    <span class="kicker">TASK COVERAGE</span>
-    <h2>Choose your tasks.</h2>
-    <p>Pick the routines you want for each run.</p>
-  </div>
-
-  <div class="capability-grid">
-    <article class="capability-card reveal">
-      <div class="capability-icon">🏙️</div>
-      <div>
-        <span class="capability-num">01</span>
-        <h3>City Maintenance</h3>
-        <p>City and alliance routines handled in one cycle.</p>
-        <div class="task-pills"><span>Territory rewards</span><span>Tech donations</span><span>City resources</span><span>Alliance Help</span></div>
-      </div>
-    </article>
-
-    <article class="capability-card reveal delay-1">
-      <div class="capability-icon">🗺️</div>
-      <div>
-        <span class="capability-num">02</span>
-        <h3>Map Gathering</h3>
-        <p>Search supported resource nodes and send gathering marches.</p>
-        <div class="task-pills"><span>Food</span><span>Wood</span><span>Stone</span><span>Gold</span><span>Home Kingdom</span><span>Lost Kingdom</span></div>
-      </div>
-    </article>
-
-    <article class="capability-card reveal delay-2">
-      <div class="capability-icon">⚔️</div>
-      <div>
-        <span class="capability-num">03</span>
-        <h3>March Tasks</h3>
-        <p>Run supported troop and alliance-pit march routines.</p>
-        <div class="task-pills"><span>1 Troop March</span><span>Gather Alliance Pit</span></div>
-      </div>
-    </article>
-
-    <article class="capability-card reveal">
-      <div class="capability-icon">🎁</div>
-      <div>
-        <span class="capability-num">04</span>
-        <h3>Daily Tasks</h3>
-        <p>Collect selected daily rewards and routine items.</p>
-        <div class="task-pills"><span>VIP rewards</span><span>Daily quests</span><span>Mail rewards</span><span>Chests</span><span>Campaign / Expedition</span></div>
-      </div>
-    </article>
-
-  </div>
-
+<div class="section-heading left reveal info-heading"><span class="kicker">TASKS</span><h2>Choose only what you want to run.</h2><p>The checked tasks run for the current character before the task manager moves on.</p></div>
+<div class="task-board">
+<article class="task-card reveal"><div class="task-card-head"><span>🏙️</span><h3>City Maintenance</h3></div><ul class="clean-list"><li>Alliance Donation</li><li>Collect city RSS</li><li>Alliance Help</li><li>Collect Alliance RSS</li></ul></article>
+<article class="task-card reveal delay-1"><div class="task-card-head"><span>⚔️</span><h3>March Tasks</h3></div><ul class="clean-list"><li><strong>1 Troop March:</strong> send to a building / fort</li><li><strong>Pit March:</strong> send to pit</li></ul></article>
+<article class="task-card reveal"><div class="task-card-head"><span>🗺️</span><h3>Map Gathering</h3></div><ul class="clean-list"><li>Select a priority RSS or choose All RSS</li><li>Select Lost Kingdom if one of your accounts is in the Lost Kingdom</li></ul></article>
+<article class="task-card reveal delay-1"><div class="task-card-head"><span>🎁</span><h3>City Management</h3></div><ul class="clean-list"><li>Collect tavern chests</li><li>Collect expedition rewards</li><li>Collect VIP rewards</li><li>Collect daily objectives</li><li>Read / claim mails</li></ul></article>
+</div>
 </div>
 </section>
-<section class="section multi-account-section" id="multi-account">
+
+<section class="switch-band" id="switching">
 <div class="container">
-<div class="multi-account-shell reveal compact-multi-account">
-  <div class="multi-account-intro">
-    <span class="kicker">BUILT FOR MULTI-ACCOUNT PLAYERS</span>
-    <h2>Managing 10, 20, or more accounts?</h2>
-    <p class="lead">Select your tasks, press Start, and let ROK Task Manager work through your configured character and account list.</p>
-    <div class="multi-account-badge">Less clicking • Less repetition • Less babysitting</div>
-  </div>
-  <div class="mantra">SELECT TASKS <strong>→</strong> PRESS START <strong>→</strong> WALK AWAY</div>
+<div class="switch-shell reveal">
+<div class="switch-copy"><span class="kicker">AUTO SWITCHING</span><h2>Finish the checked tasks, then move on.</h2><p>Both the DEMO and paid version can automatically switch between starred characters after the checked tasks are completed. Once all characters are finished, the task manager can switch accounts as well.</p></div>
+<div class="switch-facts">
+<div class="switch-fact"><strong>Starred characters only</strong><span>Character switching follows the starred character list.</span></div>
+<div class="switch-fact"><strong>Account switching</strong><span>Moves to the next saved login after all characters are done.</span></div>
+<div class="switch-fact"><strong>ROK PC login limit</strong><span>The PC version can retain 10 log-ins for account switching.</span></div>
 </div>
 </div>
+</div>
+
+<div class="container"><div class="source-photo-grid four compact" aria-label="Automatic character and account switching screenshots">
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/starred-characters.png" alt="Starred characters list" loading="lazy"/><figcaption>Starred character list used for automatic character switching.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/character-login-confirmation.png" alt="Character login confirmation screen" loading="lazy"/><figcaption>Character login confirmation during the switch flow.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/switch-accounts.png" alt="Switch Accounts screen" loading="lazy"/><figcaption>Switch Accounts control after the character cycle is complete.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/google-account-list.png" alt="Saved Google account list" loading="lazy"/><figcaption>Saved account list used for account switching.</figcaption></figure>
+</div></div>
 </section>
-<section class="section requirements-section" id="requirements"><div class="container requirements-wrap"><div class="requirements-copy reveal"><span class="kicker">PLEASE READ BEFORE USING THE DEMO OR PURCHASING</span><h2>SYSTEM REQUIREMENTS</h2><p class="requirements-lead">ROK Task Manager depends on a consistent supported PC-client layout. Please confirm these settings before downloading the demo or subscribing.</p><div class="req-grid"><div class="req"><b>Windows PC only</b><span>Windows desktop environment</span></div><div class="req"><b>Official PC client only</b><span>No emulator support</span></div><div class="req"><b>1920 × 1080</b><span>1080p resolution</span></div><div class="req"><b>100% display scaling</b><span>Windows display scale</span></div><div class="req"><b>Ultra graphics</b><span>Original map style, fullscreen</span></div><div class="req"><b>Alphanumeric names</b><span>Recommended for OCR reliability</span></div></div></div><div class="requirements-image reveal delay-1"><img alt="ROK Task Manager system requirements and feature summary" src="assets/feature-summary.png"/></div></div></section>
-<section class="stats-strip">
-<div class="container stats-grid reveal"><div><strong>7</strong><span>Core task routines</span></div><div><strong>Multi</strong><span>Character &amp; account workflow</span></div><div><strong>1080p</strong><span>Required resolution</span></div><div><strong>PC</strong><span>Official Windows client</span></div></div>
+
+<section class="section info-section">
+<div class="container farmer-grid">
+<div class="farmer-lead reveal"><span class="kicker">FOR HEAVY FARMERS</span><h2>Designed for larger farm setups.</h2><p>The supplied usage notes recommend the app for heavy farmers and identify a minimum of 12 accounts as the RSS-value breakeven point.</p><div class="metric-grid"><div class="metric"><strong>12+</strong><span>Accounts noted as RSS-value breakeven</span></div><div class="metric"><strong>6×</strong><span>Gathering cycles per day in the historical example</span></div><div class="metric"><strong>60</strong><span>Farm accounts in the historical example</span></div></div></div>
+<div class="historical-card reveal delay-1"><span class="kicker">HISTORICAL EXAMPLE</span><h3>Provided farm-account data</h3><div class="historical-number">&gt;15B / month</div><div class="historical-caption">Historical data from 60 farm accounts with maxed RSS tech and RSS buildings, gathering 6× per day.</div><div class="historical-number" style="font-size:34px; margin-top:20px;">$270</div><div class="historical-caption">Reference value shown in the supplied material at $18 USD per 1B RSS.</div><div class="fineprint">Historical example only. Actual results depend on account development, activity, available marches, gathering conditions, and other in-game factors.</div></div>
+</div>
 </section>
-<section class="section" id="demo"><div class="container"><div class="section-heading reveal"><span class="kicker">TRY BEFORE YOU BUY</span><h2>Try ROK Task Manager for free.</h2><p>Use the free Windows demo to test the core multi-account workflow before subscribing.</p></div><div class="feature-card reveal" style="max-width:760px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">Free Demo — Windows PC</h3><p>Alliance Donation • Alliance Help • 1 Troop March • Gather Alliance Pit • Character Switching • Google Account Switching</p><div class="hero-points" style="margin-top:18px;"><span>✓ No purchase required</span><span>✓ Official Windows PC client</span><span>✓ 1920×1080 supported setup required</span><span>✓ 100% Display Scale</span><span>✓ ROK Original Map Style</span><span>✓ FULLSCREEN Mode</span></div><div class="cta-actions" style="margin-top:24px;"><a class="btn btn-primary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Download Free Demo</a><a class="btn btn-secondary" href="#requirements">Read System Requirements</a></div><p style="margin-top:16px; color:var(--muted); font-size:12px;">Windows may display a security or SmartScreen warning for unsigned software. Download only from this official Loner's Corner page or the linked GitHub release.</p></div></div></section>
-<section class="section" id="gallery">
+
+<section class="section info-section" id="setup">
 <div class="container">
-<div class="section-heading reveal">
-<span class="kicker">SEE IT IN ACTION</span>
-<h2>Feature walkthroughs</h2>
-<p>Explore the major task workflows included in ROK Task Manager.</p>
-</div>
-<div class="gallery-grid">
-<button class="gallery-card reveal" data-img="assets/city-maintenance.png" data-title="City Maintenance">
-<img alt="City Maintenance workflow" loading="lazy" src="assets/city-maintenance.png"/>
-<span>City Maintenance</span>
-</button>
-<button class="gallery-card reveal delay-1" data-img="assets/city-management.png" data-title="City Management">
-<img alt="City Management workflow" loading="lazy" src="assets/city-management.png"/>
-<span>City Management</span>
-</button>
-<button class="gallery-card reveal delay-2" data-img="assets/one-troop-march.png" data-title="1 Troop March">
-<img alt="One Troop March workflow" loading="lazy" src="assets/one-troop-march.png"/>
-<span>1 Troop March</span>
-</button>
-<button class="gallery-card reveal" data-img="assets/pit-march.png" data-title="Gather Alliance Pit">
-<img alt="Gather Alliance Pit workflow" loading="lazy" src="assets/pit-march.png"/>
-<span>Gather Alliance Pit</span>
-</button>
-<button class="gallery-card reveal delay-1" data-img="assets/map-gathering.png" data-title="Map Gathering">
-<img alt="Map Gathering" loading="lazy" src="assets/map-gathering.png"/>
-<span>Map Gathering</span>
-</button>
-<button class="gallery-card reveal delay-2" data-img="assets/character-switching.png" data-title="Character Switching">
-<img alt="Character Switching" loading="lazy" src="assets/character-switching.png"/>
-<span>Character Switching</span>
-</button>
-<button class="gallery-card reveal" data-img="assets/google-account-switching.png" data-title="Google Account Switching">
-<img alt="Google Account Switching" loading="lazy" src="assets/google-account-switching.png"/>
-<span>Google Account Switching</span>
-</button>
+<div class="section-heading left reveal info-heading"><span class="kicker">SUGGESTED SETUP</span><h2>A practical task schedule.</h2><p>The supplied notes separate always-on gathering tasks from tasks you may only need at certain times of day.</p></div>
+<div class="setup-grid">
+<article class="setup-card reveal"><span class="setup-num">SETUP 01</span><h3>Pit March &amp; Map Gathering</h3><div class="schedule-row"><strong>Setting</strong><span>Always ON</span></div><div class="schedule-row"><strong>Reference timing</strong><span>100 characters total: about 3 hours</span></div></article>
+<article class="setup-card reveal delay-1"><span class="setup-num">SETUP 02</span><h3>Turn tasks on when needed</h3><div class="schedule-row"><strong>1 Troop March</strong><span>ON before sleep time</span></div><div class="schedule-row"><strong>City Management</strong><span>ON once a day before reset, if you want the extra rewards; it adds time to the full cycle</span></div><div class="schedule-row"><strong>City Maintenance</strong><span>ON twice a day — about every 10 hours</span></div></article>
 </div>
 </div>
 </section>
-<section class="section how-section">
+
+<section class="section requirements-section" id="requirements">
 <div class="container">
-<div class="section-heading reveal">
-<span class="kicker">QUICK START</span>
-<h2>From download to your task cycle</h2>
+<div class="section-heading left reveal info-heading"><span class="kicker">REQUIREMENTS</span><h2>Match the supported setup.</h2><p>The task manager relies on a consistent PC-client layout.</p></div>
+<div class="requirement-columns">
+<div class="requirement-panel reveal"><h3>In-game requirements</h3><div class="requirement-grid"><div class="requirement-item"><b>CH16 minimum</b><span>Use starred characters.</span></div><div class="requirement-item"><b>Character names</b><span>English-format names are easier to distinguish.</span></div><div class="requirement-item"><b>Map style</b><span>Original</span></div><div class="requirement-item"><b>Graphics quality</b><span>Ultra</span></div><div class="requirement-item"><b>Resolution mode</b><span>Fullscreen</span></div></div></div>
+<div class="requirement-panel reveal delay-1"><h3>PC requirements</h3><div class="requirement-grid"><div class="requirement-item"><b>Display scale</b><span>100%</span></div><div class="requirement-item"><b>Display resolution</b><span>1920 × 1080</span></div><div class="requirement-item"><b>Client</b><span>ROK PC client version only</span></div><div class="requirement-item"><b>Emulator</b><span>Not supported</span></div></div></div>
 </div>
-<div class="steps">
-<div class="step reveal"><span>1</span><h3>Get access</h3><p>Choose your plan and complete checkout securely with Whop.</p></div>
-<div class="step reveal delay-1"><span>2</span><h3>Install &amp; activate</h3><p>Download the Windows build and activate your license.</p></div>
-<div class="step reveal delay-2"><span>3</span><h3>Match requirements</h3><p>Use the supported client, resolution, scaling and graphics settings.</p></div>
-<div class="step reveal"><span>4</span><h3>Select tasks</h3><p>Choose the routines you want ROK Task Manager to perform.</p></div>
-<div class="step reveal delay-1"><span>5</span><h3>Start your cycle</h3><p>Run the workflow and monitor status from the task manager window.</p></div>
 </div>
+
+<div class="container"><div class="requirements-visuals">
+<div class="source-photo-title">Settings shown in the supplied guide</div>
+<div class="source-photo-grid four compact">
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/english-character-name.png" alt="Character nickname example using English letters and numbers" loading="lazy"/><figcaption>Character-name example.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/graphics-map-style.png" alt="Ultra graphics and Original map style settings" loading="lazy"/><figcaption>Ultra graphics and Original map style.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/fullscreen-resolution.png" alt="Fullscreen resolution setting" loading="lazy"/><figcaption>Fullscreen setting.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/windows-display-settings.png" alt="Windows 100 percent scale and 1920 by 1080 display settings" loading="lazy"/><figcaption>Windows 100% scale and 1920 × 1080 display resolution.</figcaption></figure>
+</div>
+</div></div>
+</section>
+
+<section class="section info-section">
+<div class="container">
+<div class="section-heading left reveal info-heading"><span class="kicker">CONTROLS &amp; NOTES</span><h2>What to know while it runs.</h2></div>
+<div class="utility-grid">
+<div class="utility-card reveal"><h3>Shortcuts</h3><p><span class="keycap">Ctrl + P</span> Pause</p><p><span class="keycap">Ctrl + Esc</span> Stop and close the app</p></div>
+<div class="utility-card reveal delay-1"><h3>Restart behavior</h3><p>After the app is closed and restarted, the functions will run through the characters and accounts again. It does not recall the previous app run.</p><p>Close the app once you are done with all of your accounts.</p></div>
+<div class="utility-card warning-card reveal delay-2"><h3>Usual bugs</h3><ul><li>May click the in-game shop</li><li>May click the RSS information in the top-right corner</li><li>May miss city RSS when it is behind the chat box</li></ul></div>
+</div>
+</div>
+
+<div class="container"><div class="source-photo-title">Examples from the supplied guide</div>
+<div class="source-photo-grid bug-visuals">
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/bug-shop-click.png" alt="Example of an in-game area where the task manager may click the shop" loading="lazy"/><figcaption>Example shown for the in-game shop / city-RSS misclick issue.</figcaption></figure>
+<figure class="source-photo-card"><img class="source-photo" src="assets/guide/bug-rss-info.png" alt="Top right resource information bar example" loading="lazy"/><figcaption>Top-right RSS information area referenced in the supplied bugs list.</figcaption></figure>
+</div></div>
+</section>
+
+<section class="section" id="demo">
+<div class="container">
+<div class="demo-with-photo reveal"><div class="demo-compact"><div><span class="kicker">FREE DEMO</span><h2>Test the supported setup first.</h2><p>The supplied notes recommend the free demo for Alliance Credits generation and pit gathering. Both the demo and paid version support automatic switching between starred characters and accounts.</p></div><div class="demo-actions"><a class="btn btn-primary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Download Free Demo</a><a class="btn btn-secondary" href="#requirements">Check Requirements</a></div></div><figure class="demo-source-photo"><img class="source-photo" src="assets/guide/demo-task-manager.png" alt="ROK Task Manager demo interface from the supplied guide" loading="lazy"/><figcaption style="margin-top:9px;color:#8097ac;font-size:11px;">Demo interface shown in the supplied guide.</figcaption></figure></div>
 </div>
 </section>
 <section class="section" id="subscribe"><div class="container"><div class="section-heading reveal"><span class="kicker">SECURE CHECKOUT</span><h2>Choose your payment option</h2><p id="checkout-provider-copy">One Windows PC license. Choose automatic monthly billing with Whop or PayPal.</p></div><div class="feature-card reveal" style="max-width:1120px; margin:0 auto; min-height:auto;"><h3 style="margin-top:0;">ROK Task Manager — $50 USD</h3><p style="margin-bottom:16px;">Choose your payment provider. Both Whop and PayPal renew automatically each month until cancelled.</p><p class="checkout-policy-note">Please agree to the Subscription, Cancellation &amp; Refund Policy and Terms before checkout.</p><label class="checkout-agreement" for="checkout-agreement"><input id="checkout-agreement" type="checkbox"/> <span>I have read and agree to the <a href="legal.html" rel="noopener noreferrer" target="_blank">Subscription, Cancellation &amp; Refund Policy and Terms &amp; Disclaimer</a>.</span></label><div id="whop-test-panel" style="margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.025);"><p style="margin:0 0 12px;"><strong>Whop — $50 USD / month</strong></p><p style="margin:0 0 14px; color:var(--muted); font-size:13px;">Automatic monthly subscription. Renews every month until cancelled. After payment is verified, your license key and private download access will be provided here.</p><button class="btn btn-primary" id="whop-checkout-button" type="button">Continue to Whop — $50/month</button><button class="whop-recovery-toggle" id="whop-recovery-toggle" type="button">Already purchased? Recover license &amp; download</button><div aria-live="polite" id="whop-checkout-status" style="margin-top:14px; color:var(--muted); font-size:14px; line-height:1.55;"></div><div class="whop-recovery" id="whop-recovery" hidden><p><strong>Recover existing purchase</strong></p><p>Enter the <strong>LC-ROK-...</strong> license key issued by Loner's Corner. This does not create a new charge.</p><div class="whop-recovery-row"><input id="whop-recovery-license-key" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Loner's Corner license key"/><button class="btn btn-secondary" id="whop-recovery-button" type="button">Recover Access</button></div><div aria-live="polite" id="whop-recovery-status" style="margin-top:10px; color:var(--muted); font-size:13px; line-height:1.5;"></div></div></div><div aria-live="polite" class="fulfillment-result" id="fulfillment-result"></div><p id="checkout-fulfillment-note" style="margin-top:18px; color:var(--muted); font-size:12px;">After payment is confirmed, the licensing server verifies the purchase and provides your license key and private download access.</p></div></div></section>
+
 <section class="section" id="faq">
 <div class="container faq-wrap">
-<div class="section-heading left reveal">
-<span class="kicker">FAQ</span>
-<h2>Questions before purchase</h2>
-<p>Need help before buying? Join the Discord and ask in the ROK Task Manager support channels.</p>
-<a class="btn btn-secondary js-discord-link" href="#">Join Discord</a>
-</div>
+<div class="section-heading left reveal"><span class="kicker">FAQ</span><h2>Quick answers.</h2><p>These answers reflect the supplied Task Manager notes.</p><a class="btn btn-secondary js-discord-link" href="#">Join Discord</a></div>
 <div class="faq-list reveal delay-1">
-<details open="">
-<summary>Does it work with emulators?</summary>
-<p>No. This build is designed for the official Windows PC client.</p>
-</details>
-<details>
-<summary>What display settings are required?</summary>
-<p>Use 1920×1080 resolution, 100% display scaling, fullscreen, Ultra graphics, and the original map style.</p>
-</details>
-<details>
-<summary>Can it work through multiple characters and accounts?</summary>
-<p>Yes. It can move through starred characters and saved account logins as part of the configured workflow.</p>
-</details>
-
-<details>
-<summary>Is there a free demo?</summary>
-<p>Yes. The free Windows demo includes Alliance Donation, Alliance Help, 1 Troop March, Gather Alliance Pit, Character Switching, and Google Account Switching. The full paid version adds the complete task set.</p>
-</details>
-<details>
-<summary>Is this an official game product?</summary>
-<p>No. ROK Task Manager is an independent third-party tool by Loner's Corner and is not affiliated with or endorsed by the game's publisher or developer.</p>
-</details>
+<details open><summary>Does it work with an emulator?</summary><p>No. The supported setup is the ROK PC client only.</p></details>
+<details><summary>What display settings are required?</summary><p>Use 1920 × 1080 display resolution, 100% Windows display scale, fullscreen, Ultra graphics, and Original map style.</p></details>
+<details><summary>Which characters are processed?</summary><p>Automatic character switching uses starred characters.</p></details>
+<details><summary>Does it switch accounts?</summary><p>Yes. After the characters are completed, it can switch to the next saved account login. The supplied notes state that the ROK PC version can retain 10 log-ins.</p></details>
+<details><summary>Does the app remember the previous run after I close it?</summary><p>No. Restarting the app runs the functions through the characters and accounts again.</p></details>
 </div>
 </div>
 </section>
-<section class="cta-section section">
-<div class="container cta-card reveal">
-<div>
-<span class="kicker">READY TO START?</span>
-<h2>Spend less time on repetitive tasks.</h2>
-<p>Review the requirements, choose your payment option, and get started.</p>
-</div>
-<div class="cta-actions">
-<a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a>
-<a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Try Free Demo</a>
-<a class="btn btn-secondary js-discord-link" href="#">Ask on Discord</a>
-</div>
-</div>
-</section>
+<section class="cta-section section"><div class="container cta-card reveal"><div><span class="kicker">READY TO START?</span><h2>Check your setup, then choose your tasks.</h2><p>Use the free demo first or return to the existing checkout when you are ready.</p></div><div class="cta-actions"><a class="btn btn-primary" href="#subscribe">Subscribe — $50/month</a><a class="btn btn-secondary" href="https://github.com/loners-corner-license-server/rok-task-manager/releases/download/demo-v1.0.1/ROK_Task_Manager_DEMO_v1.0.1.exe">Free Demo</a></div></div></section>
 </main>
 <footer class="footer">
 <div class="container footer-grid">
