@@ -25,8 +25,8 @@ const WHOP_CREATE_CHECKOUT_URL =
   "https://loners-corner-license-server.onrender.com/whop/create-checkout";
 const WHOP_CLAIM_LICENSE_URL =
   "https://loners-corner-license-server.onrender.com/whop/claim-license";
-const WHOP_RECOVER_LICENSE_URL =
-  "https://loners-corner-license-server.onrender.com/whop/recover-license";
+const SUBSCRIPTION_DOWNLOAD_URL =
+  "https://loners-corner-license-server.onrender.com/subscription/download-latest";
 const WHOP_CLAIM_STORAGE_KEY = "lc_rok_whop_claim_v1";
 
 const whopPanel = document.getElementById("whop-test-panel");
@@ -62,8 +62,6 @@ const PAYPAL_PENDING_SUBSCRIPTION_KEY = "lc_rok_paypal_subscription_claim_v1";
 // Legacy one-time PayPal recovery for purchases made before subscriptions went live.
 const PAYPAL_ONE_TIME_CLAIM_URL =
   "https://loners-corner-license-server.onrender.com/paypal/one-time/claim";
-const PAYPAL_ONE_TIME_RECOVER_URL =
-  "https://loners-corner-license-server.onrender.com/paypal/one-time/recover-license";
 const PAYPAL_RENEWAL_STORAGE_KEY = "lc_rok_paypal_pending_renewal_v1";
 const PAYPAL_RENEWAL_STORAGE_TTL_MS = 2 * 60 * 60 * 1000;
 
@@ -151,14 +149,6 @@ function claimPayPalOneTime(payload) {
     PAYPAL_ONE_TIME_CLAIM_URL,
     payload,
     "The licensing server could not verify this legacy PayPal payment."
-  );
-}
-
-function recoverPayPalOneTime(licenseKey) {
-  return postPayPalJson(
-    PAYPAL_ONE_TIME_RECOVER_URL,
-    { license_key: licenseKey },
-    "The licensing server could not recover this legacy PayPal purchase."
   );
 }
 
@@ -353,11 +343,11 @@ async function claimWhopLicense(claimToken) {
   );
 }
 
-async function recoverWhopLicense(licenseKey) {
+async function downloadLatestForSubscription(licenseKey) {
   return postWhopJson(
-    WHOP_RECOVER_LICENSE_URL,
+    SUBSCRIPTION_DOWNLOAD_URL,
     { license_key: licenseKey },
-    "The licensing server could not recover this Whop purchase."
+    "The licensing server could not verify this active subscription."
   );
 }
 
@@ -384,7 +374,7 @@ async function getFreshFulfillment(existingLicenseKey = "") {
 
   const licenseKey = String(existingLicenseKey || "").trim();
   if (isLonerLicenseKey(licenseKey)) {
-    return recoverWhopLicense(licenseKey);
+    return downloadLatestForSubscription(licenseKey);
   }
 
   throw new Error(
@@ -531,24 +521,7 @@ async function setupPublicPayPalSubscriptionCheckout() {
     <button type="button" id="paypal-pending-retry" hidden style="margin-top:12px;padding:0;border:0;background:none;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;">
       Retry license verification
     </button>
-
-    <button type="button" id="paypal-legacy-toggle" style="margin-top:12px;padding:0;border:0;background:none;color:var(--muted);font:inherit;font-size:12px;font-weight:700;text-decoration:underline;cursor:pointer;">
-      Legacy one-time PayPal purchase? Recover access
-    </button>
-    <div id="paypal-legacy-box" hidden style="margin-top:10px;">
-      <p style="margin:0 0 8px;color:var(--muted);font-size:12px;line-height:1.5;">
-        For a PayPal one-time purchase made before monthly subscriptions were introduced. Use your LC-ROK key, or the PayPal Transaction ID if a key was never shown.
-      </p>
-      <div class="whop-recovery-row">
-        <input id="paypal-legacy-license" type="text" autocomplete="off" spellcheck="false" placeholder="LC-ROK-..." aria-label="Legacy PayPal license key"/>
-        <button class="btn btn-secondary" id="paypal-legacy-recover" type="button">Recover Access</button>
-      </div>
-      <div class="whop-recovery-row" style="margin-top:8px;">
-        <input id="paypal-legacy-transaction" type="text" autocomplete="off" spellcheck="false" placeholder="PayPal Transaction ID" aria-label="Legacy PayPal Transaction ID"/>
-        <button class="btn btn-secondary" id="paypal-legacy-verify" type="button">Verify Payment</button>
-      </div>
-      <p id="paypal-legacy-status" style="margin:8px 0 0;color:var(--muted);font-size:12px;line-height:1.5;"></p>
-    </div>`;
+`;
 
   const checkoutCard = whopPanel.closest(".feature-card");
   let dualGrid = document.getElementById("dual-checkout-grid");
@@ -568,13 +541,6 @@ async function setupPublicPayPalSubscriptionCheckout() {
   const wrap = panel.querySelector("#paypal-buttons-wrap");
   const status = panel.querySelector("#paypal-subscription-status");
   const retryButton = panel.querySelector("#paypal-pending-retry");
-  const legacyToggle = panel.querySelector("#paypal-legacy-toggle");
-  const legacyBox = panel.querySelector("#paypal-legacy-box");
-  const legacyLicense = panel.querySelector("#paypal-legacy-license");
-  const legacyRecover = panel.querySelector("#paypal-legacy-recover");
-  const legacyTransaction = panel.querySelector("#paypal-legacy-transaction");
-  const legacyVerify = panel.querySelector("#paypal-legacy-verify");
-  const legacyStatus = panel.querySelector("#paypal-legacy-status");
 
   let paypalButtonRendered = false;
 
@@ -732,60 +698,7 @@ async function setupPublicPayPalSubscriptionCheckout() {
     }
   });
 
-  legacyToggle?.addEventListener("click", () => {
-    legacyBox.hidden = !legacyBox.hidden;
-    if (!legacyBox.hidden) legacyLicense?.focus();
-  });
-
-  legacyRecover?.addEventListener("click", async () => {
-    const key = String(legacyLicense?.value || "").trim().toUpperCase();
-    if (!isLonerLicenseKey(key)) {
-      legacyStatus.textContent = "Enter the LC-ROK key from the earlier one-time PayPal purchase.";
-      legacyStatus.style.color = "#ffb4b4";
-      return;
-    }
-    legacyRecover.disabled = true;
-    legacyStatus.textContent = "Recovering legacy PayPal purchase...";
-    legacyStatus.style.color = "var(--muted)";
-    try {
-      const result = await recoverPayPalOneTime(key);
-      if (!result || result.fulfilled !== true || !result.license_key) {
-        throw new Error((result && result.reason) || "Legacy PayPal access could not be recovered.");
-      }
-      legacyStatus.textContent = "Legacy PayPal purchase recovered.";
-      showPayPalOneTimeFulfillment(result);
-    } catch (error) {
-      legacyStatus.textContent = error && error.message ? error.message : "Legacy PayPal recovery failed.";
-      legacyStatus.style.color = "#ffb4b4";
-    } finally {
-      legacyRecover.disabled = false;
-    }
-  });
-
-  legacyVerify?.addEventListener("click", async () => {
-    const tx = String(legacyTransaction?.value || "").trim();
-    if (!tx) {
-      legacyStatus.textContent = "Enter the PayPal Transaction ID first.";
-      legacyStatus.style.color = "#ffb4b4";
-      return;
-    }
-    legacyVerify.disabled = true;
-    legacyStatus.textContent = "Verifying the legacy PayPal transaction...";
-    legacyStatus.style.color = "var(--muted)";
-    try {
-      const result = await claimPayPalOneTime({ order_id: "", transaction_id: tx, renew_license_key: "" });
-      if (!result || result.fulfilled !== true || !result.license_key) {
-        throw new Error((result && result.reason) || "Legacy PayPal payment could not be verified.");
-      }
-      legacyStatus.textContent = "Payment verified. Your license and download are ready.";
-      showPayPalOneTimeFulfillment(result);
-    } catch (error) {
-      legacyStatus.textContent = error && error.message ? error.message : "Legacy PayPal verification failed.";
-      legacyStatus.style.color = "#ffb4b4";
-    } finally {
-      legacyVerify.disabled = false;
-    }
-  });
+  // Legacy one-time LC-key recovery is no longer exposed on the public storefront.
 
   const pending = getPendingPayPalSubscription();
   if (pending && pending.subscription_id && pending.claim_token.length >= 32) {
@@ -914,7 +827,7 @@ function setupPayPalOneTimeReturnRecovery() {
 setupPublicPayPalSubscriptionCheckout().catch((error) => {
   console.error("PayPal Orders checkout startup error:", error);
 });
-setupPayPalOneTimeReturnRecovery();
+// Legacy one-time PayPal public fulfillment/recovery is intentionally disabled.
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -931,10 +844,10 @@ async function completeWhopPurchase() {
         strong: true
       },
       {
-        text: "If you completed payment, do not pay again. Use Recover existing purchase below with your LC-ROK license key."
+        text: "If you completed payment, do not pay again. Use Download latest version below with your LC-ROK subscription license key."
       }
     ]);
-    showRecoveryPanel("Your payment is not lost. Enter your LC-ROK license key to recover the license and a fresh private download link.");
+    showRecoveryPanel("Your payment is not lost. Enter your LC-ROK subscription license key to verify access and create a fresh private download link.");
     return;
   }
 
@@ -1044,7 +957,7 @@ async function restoreWhopPurchaseFromSession() {
   }
 }
 
-async function handleWhopRecovery() {
+async function handleSubscriptionDownload() {
   const licenseKey = String(whopRecoveryKey?.value || "").trim().toUpperCase();
   if (!isLonerLicenseKey(licenseKey)) {
     setRecoveryStatus("Enter the LC-ROK license key issued by Loner's Corner.", true);
@@ -1053,10 +966,10 @@ async function handleWhopRecovery() {
   }
 
   if (whopRecoveryButton) whopRecoveryButton.disabled = true;
-  setRecoveryStatus("Verifying the license and preparing a fresh private download link...");
+  setRecoveryStatus("Verifying the active subscription and preparing a fresh private download link...");
 
   try {
-    const result = await recoverWhopLicense(licenseKey);
+    const result = await downloadLatestForSubscription(licenseKey);
     if (!result || result.fulfilled !== true || !result.license_key) {
       throw new Error(
         (result && result.reason) || "This purchase could not be recovered."
@@ -1065,16 +978,16 @@ async function handleWhopRecovery() {
 
     showFulfillment(result);
     setWhopStatus([
-      { text: "Existing Whop purchase recovered successfully.", strong: true },
-      { text: "Your license and private download access are ready below." }
+      { text: "Active subscription verified successfully.", strong: true },
+      { text: "Your latest-version private download is ready below." }
     ]);
     setRecoveryStatus("");
   } catch (error) {
-    console.error("Whop license recovery error:", error);
+    console.error("Subscription download verification error:", error);
     setRecoveryStatus(
       error && error.message
         ? error.message
-        : "The purchase could not be recovered. Please contact Loner's Corner support.",
+        : "The active subscription could not be verified. Please contact Loner's Corner support.",
       true
     );
   } finally {
@@ -1104,11 +1017,11 @@ whopRecoveryToggle?.addEventListener("click", () => {
   if (!whopRecovery.hidden) whopRecoveryKey?.focus();
 });
 
-whopRecoveryButton?.addEventListener("click", handleWhopRecovery);
+whopRecoveryButton?.addEventListener("click", handleSubscriptionDownload);
 whopRecoveryKey?.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
-    handleWhopRecovery();
+    handleSubscriptionDownload();
   }
 });
 
