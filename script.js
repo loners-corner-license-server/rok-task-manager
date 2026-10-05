@@ -505,7 +505,8 @@ async function setupPublicPayPalSubscriptionCheckout() {
   panel.style.borderRadius = "14px";
   panel.style.background = "rgba(255,255,255,.025)";
   panel.innerHTML = `
-    <p style="margin:0 0 10px;"><strong>PayPal — $50 USD / month</strong></p>
+    <p style="margin:0 0 8px;"><strong>PAY WITH PAYPAL FOR ONLY $39.99/MONTH</strong></p>
+    <p style="margin:0 0 10px;color:#b8f4d1;font-size:13px;font-weight:800;line-height:1.45;">PayPal promotional subscription price: $39.99 USD per month.</p>
     <p style="margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5;">
       Automatic monthly subscription. Renews every month until cancelled. After PayPal approves the subscription, the licensing server verifies it and provides your LC-ROK license and private download here automatically.
     </p>
@@ -571,7 +572,7 @@ async function setupPublicPayPalSubscriptionCheckout() {
     } else if (!allowed) {
       status.textContent = "PayPal subscription checkout is ready. Agree to the terms above to enable it.";
     } else {
-      status.textContent = "PayPal subscription checkout is ready. $50 USD will renew automatically every month until cancelled.";
+      status.textContent = "PayPal subscription checkout is ready. $39.99 USD will renew automatically every month until cancelled.";
     }
   };
 
